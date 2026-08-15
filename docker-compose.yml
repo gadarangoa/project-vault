@@ -1,0 +1,24 @@
+services:
+  web:
+    build: .
+    ports:
+      - "127.0.0.1:5174:80"
+    depends_on:
+      api:
+        condition: service_started
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+    environment:
+      DATABASE_PATH: /data/secret-vault.sqlite
+      PORT: 3001
+      HOST: 0.0.0.0
+    volumes:
+      - secret-vault-data:/data
+    restart: unless-stopped
+
+volumes:
+  secret-vault-data:

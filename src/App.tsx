@@ -7,7 +7,12 @@ import {
   Folder,
   Tag as TagIcon,
   Pencil,
+  MoreHorizontal,
+  Moon,
+  Sun,
+  X,
 } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { useApp } from '@/context/AppContext'
 import { Sidebar } from '@/components/sidebar'
 import { SecretCard } from '@/components/secret-card'
@@ -18,6 +23,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   Dialog,
   DialogContent,
@@ -39,19 +51,27 @@ import {
 import { cn } from '@/lib/utils'
 import type { Secret } from '@/lib/types'
 
-function ProjectSettings() {
+function ProjectSettingsDialog({
+  open,
+  onOpenChange,
+  confirmDelete,
+  onConfirmDeleteChange,
+}: {
+  open: boolean
+  onOpenChange: (o: boolean) => void
+  confirmDelete: boolean
+  onConfirmDeleteChange: (o: boolean) => void
+}) {
   const { selectedProject, updateProject, deleteProject, selectProject } = useApp()
-  const [open, setOpen] = useState(false)
   const [name, setName] = useState(selectedProject?.name ?? '')
   const [description, setDescription] = useState(selectedProject?.description ?? '')
-  const [confirmDelete, setConfirmDelete] = useState(false)
 
   return (
     <>
       <Dialog
         open={open}
         onOpenChange={(o) => {
-          setOpen(o)
+          onOpenChange(o)
           if (o) {
             setName(selectedProject?.name ?? '')
             setDescription(selectedProject?.description ?? '')
@@ -79,7 +99,7 @@ function ProjectSettings() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setConfirmDelete(true)} className="mr-auto text-destructive">
+            <Button variant="outline" onClick={() => onConfirmDeleteChange(true)} className="mr-auto text-destructive">
               <Trash2 /> Eliminar
             </Button>
             <Button
@@ -87,7 +107,7 @@ function ProjectSettings() {
               onClick={async () => {
                 if (!selectedProject) return
                 await updateProject(selectedProject.id, name.trim(), description.trim())
-                setOpen(false)
+                onOpenChange(false)
               }}
             >
               Guardar
@@ -96,7 +116,7 @@ function ProjectSettings() {
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+      <AlertDialog open={confirmDelete} onOpenChange={onConfirmDeleteChange}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>¿Eliminar este proyecto?</AlertDialogTitle>
@@ -108,12 +128,12 @@ function ProjectSettings() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive text-white hover:bg-destructive/90"
+              variant="destructive"
               onClick={async () => {
                 if (!selectedProject) return
                 await deleteProject(selectedProject.id)
-                setConfirmDelete(false)
-                setOpen(false)
+                onConfirmDeleteChange(false)
+                onOpenChange(false)
                 selectProject(null)
               }}
             >
@@ -141,8 +161,9 @@ function TagFilterBar() {
         {tags.length > 0 && (
           <button
             onClick={() => setTagFilter(null)}
+            aria-pressed={tagFilter === null}
             className={cn(
-              'inline-flex h-5 items-center gap-1 rounded-4xl border px-2 text-xs font-medium transition-colors',
+              'inline-flex h-5 items-center justify-center gap-1 rounded-4xl border px-2 text-xs font-medium transition-colors',
               tagFilter === null
                 ? 'bg-primary text-primary-foreground'
                 : 'border-border text-muted-foreground hover:bg-muted hover:text-foreground',
@@ -154,7 +175,7 @@ function TagFilterBar() {
         {tags.map((tag) => {
           const active = tagFilter === tag.name
           return (
-            <button key={tag.id} onClick={() => setTagFilter(active ? null : tag.name)}>
+            <button key={tag.id} onClick={() => setTagFilter(active ? null : tag.name)} aria-pressed={active}>
               <TagBadge
                 tag={tag}
                 className={cn(
@@ -184,7 +205,7 @@ function TagFilterBar() {
 
 function EmptyState({ onNewSecret, isFiltered }: { onNewSecret: () => void; isFiltered: boolean }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed py-16 text-center">
+    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed py-16 text-center animate-rise-in">
       <div className="flex size-12 items-center justify-center rounded-xl bg-muted">
         {isFiltered ? <Search className="size-5 text-muted-foreground" /> : <KeyRound className="size-5 text-muted-foreground" />}
       </div>
@@ -212,8 +233,8 @@ function NoProject() {
   return (
     <div className="flex flex-1 items-center justify-center p-8">
       <div className="flex max-w-md flex-col items-center gap-4 text-center">
-        <div className="flex size-16 items-center justify-center rounded-2xl bg-primary/10">
-          <Folder className="size-8 text-primary" />
+        <div className="flex size-16 items-center justify-center rounded-2xl bg-vault/10">
+          <Folder className="size-8 text-vault" />
         </div>
         <div>
           <h1 className="text-xl font-semibold">Selecciona un proyecto</h1>
@@ -232,10 +253,13 @@ function NoProject() {
 }
 
 export default function App() {
-  const { ready, selectedProject, secrets, search, setSearch, tagFilter } = useApp()
+  const { ready, error, retry, selectedProject, secrets, search, setSearch, tagFilter } = useApp()
+  const { resolvedTheme, setTheme } = useTheme()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Secret | null>(null)
   const [deleting, setDeleting] = useState<Secret | null>(null)
+  const [projectSettingsOpen, setProjectSettingsOpen] = useState(false)
+  const [confirmDeleteProject, setConfirmDeleteProject] = useState(false)
   const { deleteSecret } = useApp()
 
   const openNew = () => {
@@ -250,51 +274,108 @@ export default function App() {
 
   const activeTagCount = tagFilter ? 1 : 0
   const isFiltered = search.trim().length > 0 || activeTagCount > 0
+  const isDark = resolvedTheme === 'dark'
 
   if (!ready) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
+      <div className="flex min-h-screen animate-pulse items-center justify-center text-sm text-muted-foreground">
         Cargando base de datos local...
       </div>
     )
   }
 
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-6 text-center">
+        <div className="flex max-w-sm flex-col items-center gap-4">
+          <div className="flex size-12 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+            <KeyRound className="size-5" />
+          </div>
+          <div className="space-y-1.5">
+            <h1 className="text-base font-semibold">La bóveda no está disponible</h1>
+            <p className="text-sm leading-relaxed text-muted-foreground">{error}</p>
+          </div>
+          <Button onClick={() => void retry()}>Reintentar</Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen flex-col overflow-hidden md:flex-row">
       <Sidebar />
       <main className="flex flex-1 flex-col overflow-hidden">
         {selectedProject ? (
-          <>
-            <header className="flex items-center justify-between gap-4 border-b px-6 py-4">
+          <div key={selectedProject.id} className="flex min-h-0 flex-1 flex-col animate-vault-open">
+            <header className="flex items-center justify-between gap-4 border-b bg-vault/5 px-6 py-4 dark:bg-vault/10">
               <div className="flex min-w-0 items-center gap-3">
-                <div className="flex size-9 items-center justify-center rounded-lg bg-muted">
-                  <Folder className="size-4 text-muted-foreground" />
+                <div className="flex size-10 items-center justify-center rounded-xl bg-vault/10 ring-1 ring-vault/20">
+                  <Folder className="size-5 text-vault" />
                 </div>
                 <div className="min-w-0">
-                  <h1 className="truncate text-lg font-semibold leading-tight">{selectedProject.name}</h1>
+                  <h1 className="truncate text-xl font-semibold leading-tight tracking-tight">{selectedProject.name}</h1>
                   {selectedProject.description && (
-                    <p className="truncate text-sm text-muted-foreground">{selectedProject.description}</p>
+                    <p className="truncate text-xs text-muted-foreground">{selectedProject.description}</p>
                   )}
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon-sm" onClick={openNew} title="Nuevo secreto">
-                  <Plus />
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => setTheme(isDark ? 'light' : 'dark')}
+                  title={isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+                >
+                  {isDark ? <Sun key="sun" className="animate-swap-in" /> : <Moon key="moon" className="animate-swap-in" />}
+                  <span className="sr-only">Cambiar tema</span>
                 </Button>
-                <ProjectSettings />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon-sm" title="Acciones del proyecto">
+                      <span className="sr-only">Acciones del proyecto</span>
+                      <MoreHorizontal />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setProjectSettingsOpen(true)}>
+                      <Pencil /> Editar proyecto
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem variant="destructive" onClick={() => setConfirmDeleteProject(true)}>
+                      <Trash2 /> Eliminar proyecto
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <ProjectSettingsDialog
+                  open={projectSettingsOpen}
+                  onOpenChange={setProjectSettingsOpen}
+                  confirmDelete={confirmDeleteProject}
+                  onConfirmDeleteChange={setConfirmDeleteProject}
+                />
               </div>
             </header>
 
-            <div className="flex flex-col gap-4 overflow-y-auto px-6 py-5">
+            <div className="flex min-h-0 flex-col gap-5 overflow-y-auto px-6 py-5">
               <div className="flex flex-col gap-3">
                 <div className="relative">
                   <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     className="pl-8"
+                    aria-label="Buscar secretos"
                     placeholder="Buscar por nombre, clave, usuario, email, tag..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
+                  {search && (
+                    <button
+                      type="button"
+                      aria-label="Limpiar búsqueda"
+                      onClick={() => setSearch('')}
+                      className="absolute top-1/2 right-2.5 flex size-5 -translate-y-1/2 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  )}
                 </div>
                 <TagFilterBar />
               </div>
@@ -302,7 +383,7 @@ export default function App() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary">{secrets.length}</Badge>
-                  <span className="text-sm text-muted-foreground">secretos</span>
+                  <span className="text-xs font-medium text-muted-foreground">secretos</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button size="sm" onClick={openNew}>
@@ -315,18 +396,23 @@ export default function App() {
                 <EmptyState onNewSecret={openNew} isFiltered={isFiltered} />
               ) : (
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-                  {secrets.map((secret) => (
-                    <SecretCard
+                  {secrets.map((secret, index) => (
+                    <div
                       key={secret.id}
-                      secret={secret}
-                      onEdit={openEdit}
-                      onDelete={(s) => setDeleting(s)}
-                    />
+                      className="animate-rise-in"
+                      style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}
+                    >
+                      <SecretCard
+                        secret={secret}
+                        onEdit={openEdit}
+                        onDelete={(s) => setDeleting(s)}
+                      />
+                    </div>
                   ))}
                 </div>
               )}
             </div>
-          </>
+          </div>
         ) : (
           <NoProject />
         )}
@@ -347,7 +433,7 @@ export default function App() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive text-white hover:bg-destructive/90"
+              variant="destructive"
               onClick={async () => {
                 if (deleting) await deleteSecret(deleting.id)
                 setDeleting(null)

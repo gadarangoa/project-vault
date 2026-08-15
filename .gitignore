@@ -25,3 +25,9 @@ dist-ssr
 
 .agents/
 graphify-out/
+
+# Local SQLite data
+data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal

@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-15T08:10:16Z",
+  "title": "Design System: Secret Vault",
+  "extensions": {
+    "colorMeta": {
+      "tinta": { "role": "primary", "displayName": "Tinta", "canonical": "oklch(0.205 0 0)", "tonalRamp": ["oklch(0.145 0 0)", "oklch(0.205 0 0)", "oklch(0.269 0 0)", "oklch(0.371 0 0)", "oklch(0.556 0 0)", "oklch(0.708 0 0)", "oklch(0.922 0 0)", "oklch(0.985 0 0)"] },
+      "tinta-clara": { "role": "primary", "displayName": "Tinta Clara", "canonical": "oklch(0.922 0 0)", "tonalRamp": ["oklch(0.145 0 0)", "oklch(0.205 0 0)", "oklch(0.269 0 0)", "oklch(0.371 0 0)", "oklch(0.556 0 0)", "oklch(0.708 0 0)", "oklch(0.922 0 0)", "oklch(0.985 0 0)"] },
+      "papel": { "role": "neutral", "displayName": "Papel", "canonical": "oklch(1 0 0)", "tonalRamp": ["oklch(0.85 0 0)", "oklch(0.9 0 0)", "oklch(0.95 0 0)", "oklch(0.97 0 0)", "oklch(0.985 0 0)", "oklch(0.995 0 0)", "oklch(1 0 0)", "oklch(1 0 0)"] },
+      "papel-oscuro": { "role": "neutral", "displayName": "Papel Oscuro", "canonical": "oklch(0.145 0 0)", "tonalRamp": ["oklch(0.145 0 0)", "oklch(0.205 0 0)", "oklch(0.269 0 0)", "oklch(0.371 0 0)", "oklch(0.556 0 0)", "oklch(0.708 0 0)", "oklch(0.922 0 0)", "oklch(0.985 0 0)"] },
+      "nieve": { "role": "neutral", "displayName": "Nieve", "canonical": "oklch(0.985 0 0)", "tonalRamp": ["oklch(0.85 0 0)", "oklch(0.9 0 0)", "oklch(0.95 0 0)", "oklch(0.97 0 0)", "oklch(0.985 0 0)", "oklch(0.995 0 0)", "oklch(1 0 0)", "oklch(1 0 0)"] },
+      "bruma": { "role": "neutral", "displayName": "Bruma", "canonical": "oklch(0.97 0 0)", "tonalRamp": ["oklch(0.85 0 0)", "oklch(0.9 0 0)", "oklch(0.95 0 0)", "oklch(0.97 0 0)", "oklch(0.985 0 0)", "oklch(0.995 0 0)", "oklch(1 0 0)", "oklch(1 0 0)"] },
+      "bruma-oscura": { "role": "neutral", "displayName": "Bruma Oscura", "canonical": "oklch(0.269 0 0)", "tonalRamp": ["oklch(0.145 0 0)", "oklch(0.205 0 0)", "oklch(0.269 0 0)", "oklch(0.371 0 0)", "oklch(0.556 0 0)", "oklch(0.708 0 0)", "oklch(0.922 0 0)", "oklch(0.985 0 0)"] },
+      "niebla": { "role": "neutral", "displayName": "Niebla", "canonical": "oklch(0.556 0 0)", "tonalRamp": ["oklch(0.145 0 0)", "oklch(0.205 0 0)", "oklch(0.269 0 0)", "oklch(0.371 0 0)", "oklch(0.556 0 0)", "oklch(0.708 0 0)", "oklch(0.922 0 0)", "oklch(0.985 0 0)"] },
+      "niebla-oscura": { "role": "neutral", "displayName": "Niebla Oscura", "canonical": "oklch(0.708 0 0)", "tonalRamp": ["oklch(0.145 0 0)", "oklch(0.205 0 0)", "oklch(0.269 0 0)", "oklch(0.371 0 0)", "oklch(0.556 0 0)", "oklch(0.708 0 0)", "oklch(0.922 0 0)", "oklch(0.985 0 0)"] },
+      "ceniza": { "role": "neutral", "displayName": "Ceniza", "canonical": "oklch(0.922 0 0)", "tonalRamp": ["oklch(0.145 0 0)", "oklch(0.205 0 0)", "oklch(0.269 0 0)", "oklch(0.371 0 0)", "oklch(0.556 0 0)", "oklch(0.708 0 0)", "oklch(0.922 0 0)", "oklch(0.985 0 0)"] },
+      "humo": { "role": "neutral", "displayName": "Humo", "canonical": "oklch(0.708 0 0)", "tonalRamp": ["oklch(0.145 0 0)", "oklch(0.205 0 0)", "oklch(0.269 0 0)", "oklch(0.371 0 0)", "oklch(0.556 0 0)", "oklch(0.708 0 0)", "oklch(0.922 0 0)", "oklch(0.985 0 0)"] },
+      "humo-oscuro": { "role": "neutral", "displayName": "Humo Oscuro", "canonical": "oklch(0.556 0 0)", "tonalRamp": ["oklch(0.145 0 0)", "oklch(0.205 0 0)", "oklch(0.269 0 0)", "oklch(0.371 0 0)", "oklch(0.556 0 0)", "oklch(0.708 0 0)", "oklch(0.922 0 0)", "oklch(0.985 0 0)"] },
+      "alarma": { "role": "destructive", "displayName": "Alarma", "canonical": "oklch(0.577 0.245 27.325)", "tonalRamp": ["oklch(0.18 0.19 22)", "oklch(0.3 0.22 24)", "oklch(0.42 0.24 25)", "oklch(0.52 0.25 26)", "oklch(0.577 0.245 27.325)", "oklch(0.68 0.21 22)", "oklch(0.79 0.16 22)", "oklch(0.9 0.06 20)"] },
+      "alarma-oscura": { "role": "destructive", "displayName": "Alarma Oscura", "canonical": "oklch(0.704 0.191 22.216)", "tonalRamp": ["oklch(0.18 0.19 22)", "oklch(0.3 0.22 24)", "oklch(0.42 0.24 25)", "oklch(0.52 0.25 26)", "oklch(0.62 0.23 24)", "oklch(0.704 0.191 22.216)", "oklch(0.79 0.16 22)", "oklch(0.9 0.06 20)"] },
+      "azul-etiqueta": { "role": "accent", "displayName": "Azul Etiqueta", "canonical": "oklch(0.623 0.214 259.815)", "tonalRamp": ["oklch(0.282 0.091 267.935)", "oklch(0.424 0.199 265.638)", "oklch(0.488 0.243 264.376)", "oklch(0.546 0.245 262.881)", "oklch(0.623 0.214 259.815)", "oklch(0.707 0.165 254.624)", "oklch(0.882 0.059 254.128)", "oklch(0.97 0.014 254.604)"] },
+      "verde-etiqueta": { "role": "accent", "displayName": "Verde Etiqueta", "canonical": "oklch(0.696 0.17 162.48)", "tonalRamp": ["oklch(0.262 0.051 172.552)", "oklch(0.448 0.119 166.534)", "oklch(0.527 0.154 150.069)", "oklch(0.596 0.145 163.225)", "oklch(0.696 0.17 162.48)", "oklch(0.788 0.115 160.529)", "oklch(0.9 0.05 154.019)", "oklch(0.967 0.031 155.329)"] },
+      "ambar-etiqueta": { "role": "accent", "displayName": "Ámbar Etiqueta", "canonical": "oklch(0.769 0.188 70.08)", "tonalRamp": ["oklch(0.402 0.101 73.639)", "oklch(0.473 0.137 72.419)", "oklch(0.555 0.163 70.288)", "oklch(0.666 0.179 58.318)", "oklch(0.769 0.188 70.08)", "oklch(0.832 0.128 85.531)", "oklch(0.922 0.078 94.9)", "oklch(0.987 0.022 95.277)"] },
+      "rojo-etiqueta": { "role": "accent", "displayName": "Rojo Etiqueta", "canonical": "oklch(0.637 0.237 25.331)", "tonalRamp": ["oklch(0.396 0.141 25.723)", "oklch(0.505 0.213 27.518)", "oklch(0.577 0.245 27.325)", "oklch(0.637 0.237 25.331)", "oklch(0.704 0.191 22.216)", "oklch(0.792 0.143 20.168)", "oklch(0.908 0.05 19.74)", "oklch(0.971 0.013 17.38)"] },
+      "violeta-etiqueta": { "role": "accent", "displayName": "Violeta Etiqueta", "canonical": "oklch(0.541 0.281 293.009)", "tonalRamp": ["oklch(0.382 0.176 304.987)", "oklch(0.457 0.24 293.915)", "oklch(0.541 0.281 293.009)", "oklch(0.606 0.25 292.717)", "oklch(0.714 0.203 305.504)", "oklch(0.814 0.111 293.217)", "oklch(0.906 0.063 306.703)", "oklch(0.969 0.016 293.756)"] },
+      "cian-etiqueta": { "role": "accent", "displayName": "Cian Etiqueta", "canonical": "oklch(0.715 0.143 215.221)", "tonalRamp": ["oklch(0.302 0.056 229.695)", "oklch(0.478 0.114 224.331)", "oklch(0.578 0.133 212.037)", "oklch(0.648 0.145 220.167)", "oklch(0.715 0.143 215.221)", "oklch(0.815 0.102 214.548)", "oklch(0.92 0.04 213.757)", "oklch(0.984 0.019 200.873)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Encabezados de pantalla vacía (text-xl, 600)." },
+      "title": { "displayName": "Title", "purpose": "Nombre de proyecto en header, títulos de diálogo." },
+      "body": { "displayName": "Body", "purpose": "Texto dominante: filas de secretos, descripciones, menús." },
+      "label": { "displayName": "Label", "purpose": "Etiquetas de campo, secciones, contadores (text-xs, 500)." },
+      "mono": { "displayName": "Mono", "purpose": "Única fuente para valores sensibles de secretos; siempre truncada y enmascarada por defecto." }
+    },
+    "shadows": [
+      { "name": "hairline", "value": "0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent)", "purpose": "Ring fino que enmarca popovers y diálogos." },
+      { "name": "floating-low", "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)", "purpose": "Menús y dropdowns (shadow-md)." },
+      { "name": "floating-high", "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)", "purpose": "Submenús (shadow-lg)." },
+      { "name": "overlay-scrim", "value": "0 0 0 100vmax color-mix(in srgb, #000 10%, transparent)", "purpose": "Scrim de diálogos: tinta negra al 10% con backdrop blur." }
+    ],
+    "motion": [
+      { "name": "duration-100", "value": "100ms", "purpose": "Duración estándar de transiciones de estado." },
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Easing por defecto de Tailwind para transitions." },
+      { "name": "enter-fade-zoom", "value": "fade-in 0.1s + zoom-in 0.95", "purpose": "Entrada de overlays y menús (tw-animate-css)." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción principal: crear proyecto o secreto. La única presencia 'llena' del sistema.",
+      "html": "<button class=\"ds-btn-primary\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\"><path d=\"M8 3v10M3 8h10\"/></svg>Nuevo secreto</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:0 12px;border:none;border-radius:8px;background:var(--primary);color:var(--primary-foreground);font:500 14px/1 ui-sans-serif,system-ui,sans-serif;white-space:nowrap;cursor:pointer;transition:background .15s,color .15s}.ds-btn-primary:hover{background:color-mix(in oklab,var(--primary) 80%,transparent)}.ds-btn-primary:active{transform:translateY(1px)}.ds-btn-primary:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}.ds-btn-primary svg{width:16px;height:16px}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Acción secundaria con borde; p. ej. 'Eliminar' en el pie de diálogos.",
+      "html": "<button class=\"ds-btn-outline\">Eliminar</button>",
+      "css": ".ds-btn-outline{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:var(--background);color:var(--foreground);font:500 14px/1 ui-sans-serif,system-ui,sans-serif;white-space:nowrap;cursor:pointer;transition:background .15s,color .15s}.ds-btn-outline:hover{background:var(--muted)}.ds-btn-outline:active{transform:translateY(1px)}.ds-btn-outline:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Confirmación de borrado: rojo en dosis baja, nunca un botón lleno de rojo.",
+      "html": "<button class=\"ds-btn-destructive\">Eliminar</button>",
+      "css": ".ds-btn-destructive{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:0 12px;border:none;border-radius:8px;background:color-mix(in oklab,var(--destructive) 10%,transparent);color:var(--destructive);font:500 14px/1 ui-sans-serif,system-ui,sans-serif;white-space:nowrap;cursor:pointer;transition:background .15s,color .15s}.ds-btn-destructive:hover{background:color-mix(in oklab,var(--destructive) 20%,transparent)}.ds-btn-destructive:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--destructive) 20%,transparent)}"
+    },
+    {
+      "name": "Tag Badge",
+      "kind": "chip",
+      "refersTo": "tag-blue",
+      "description": "Etiqueta de organización: fondo 10%, borde 30%, texto del tono.",
+      "html": "<span class=\"ds-tag\">Backend</span>",
+      "css": ".ds-tag{display:inline-flex;align-items:center;justify-content:center;height:20px;padding:0 8px;border-radius:999px;border:1px solid color-mix(in oklab,oklch(0.623 0.214 259.815) 30%,transparent);background:color-mix(in oklab,oklch(0.623 0.214 259.815) 10%,transparent);color:oklch(0.546 0.245 262.881);font:500 12px/1 ui-sans-serif,system-ui,sans-serif;white-space:nowrap}@media (prefers-color-scheme:dark){.ds-tag{color:oklch(0.707 0.165 254.624)}}"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Búsqueda del proyecto: campo con icono a la izquierda y padding adicional.",
+      "html": "<label class=\"ds-field\"><svg class=\"ds-icon\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><circle cx=\"7\" cy=\"7\" r=\"4.5\"/><path d=\"m11 11 3 3\"/></svg><input class=\"ds-input\" type=\"text\" placeholder=\"Buscar secretos...\"></label>",
+      "css": ".ds-field{position:relative;display:block;width:100%}.ds-input{width:100%;height:32px;padding:0 12px 0 32px;border:1px solid var(--input);border-radius:8px;background:var(--background);color:var(--foreground);font:400 14px/1 ui-sans-serif,system-ui,sans-serif;transition:border-color .15s,box-shadow .15s}.ds-input::placeholder{color:var(--muted-foreground)}.ds-input:focus-visible{outline:none;border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}.ds-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted-foreground);pointer-events:none}"
+    },
+    {
+      "name": "Secret Card",
+      "kind": "card",
+      "refersTo": "card-secret",
+      "description": "Tarjeta de secreto: plana, con icono de tipo, título y fila de valor enmascarado.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-head\"><span class=\"ds-card-icon\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M3 5h10M3 11h10\"/><path d=\"M5 5c1-1 3-1 4 0 1 1 3 1 4 0\"/></svg></span><div class=\"ds-card-meta\"><div class=\"ds-card-title\">API_KEY_PAYMENTS</div><div class=\"ds-card-sub\">Variable de entorno</div></div></div><div class=\"ds-row\"><svg class=\"ds-row-icon\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><rect x=\"3.5\" y=\"7.5\" width=\"9\" height=\"6\" rx=\"1.5\"/><path d=\"M5.5 7.5V5a2.5 2.5 0 0 1 5 0v2.5\"/></svg><code class=\"ds-row-value\">••••••••••</code></div></div>",
+      "css": ".ds-card{display:flex;flex-direction:column;gap:10px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--card)}.ds-card-head{display:flex;align-items:flex-start;gap:8px}.ds-card-icon{display:flex;align-items:center;justify-content:center;width:32px;height:32px;flex-shrink:0;border-radius:8px;background:var(--muted);color:var(--muted-foreground)}.ds-card-icon svg{width:16px;height:16px}.ds-card-meta{min-width:0}.ds-card-title{font:500 14px/1.25 ui-sans-serif,system-ui,sans-serif;color:var(--foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ds-card-sub{font:400 12px/1.25 ui-sans-serif,system-ui,sans-serif;color:var(--muted-foreground)}.ds-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:color-mix(in oklab,var(--muted) 50%,transparent)}.ds-row-icon{width:14px;height:14px;color:var(--muted-foreground);flex-shrink:0}.ds-row-value{flex:1;min-width:0;font:400 14px/1 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;color:var(--foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
+    },
+    {
+      "name": "Sidebar Nav Item",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Ítem de proyecto en la sidebar: seleccionado en Tinta, reposo en muted.",
+      "html": "<div class=\"ds-nav\"><button class=\"ds-nav-item is-active\"><svg class=\"ds-nav-icon\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linejoin=\"round\"><path d=\"M2 4.5A1.5 1.5 0 0 1 3.5 3h2.6a1.5 1.5 0 0 1 1.1.5l.9 1H12.5A1.5 1.5 0 0 1 14 6v5.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5z\"/></svg>Backend API</button><button class=\"ds-nav-item\"><svg class=\"ds-nav-icon\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"M2 4.5A1.5 1.5 0 0 1 3.5 3h9A1.5 1.5 0 0 1 14 4.5v7A1.5 1.5 0 0 1 12.5 13h-9A1.5 1.5 0 0 1 2 11.5z\"/></svg>QA</button></div>",
+      "css": ".ds-nav{display:flex;flex-direction:column;gap:4px}.ds-nav-item{display:flex;align-items:center;gap:8px;width:100%;height:36px;padding:0 10px;border:none;border-radius:8px;background:transparent;color:var(--muted-foreground);font:400 14px/1 ui-sans-serif,system-ui,sans-serif;text-align:left;cursor:pointer;transition:background .15s,color .15s}.ds-nav-item:hover{background:var(--muted);color:var(--foreground)}.ds-nav-item.is-active{background:var(--primary);color:var(--primary-foreground)}.ds-nav-item:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}.ds-nav-icon{width:16px;height:16px;flex-shrink:0}"
+    }
+  ],
+  "narrative": {
+    "northStar": "La Bóveda Silenciosa",
+    "overview": "Secret Vault es una bóveda discreta incrustada en la pared: superficies tranquilas, sin ornamentación, donde la calma misma comunica seguridad. El sistema es casi monocromo —grises puros de tinta y papel— y mantiene todo el color para lo que lo merece: la señal destructiva y las etiquetas de organización. Nada grita; cada detalle trabaja en silencio. La voz es de discreción profesional: densidad media, jerarquía construida con espaciado y bordes en lugar de sombras o gradientes, y una única decisión cromática fuerte en cada pantalla. Este es un producto de modo Operate — el usuario viene a guardar o recuperar un secreto rápido y sin fricción, y la interfaz se aparta de su camino. La confianza se construye con precisión tipográfica, señales de estado claras y la promesa de que los valores sensibles permanecen ocultos hasta que se piden explícitamente.",
+    "keyCharacteristics": [
+      "Monocromo por defecto; el color aparece solo en la alarma destructiva y en la paleta de etiquetas.",
+      "Profundidad por líneas y tonos (bordes, bg-muted); sombras reservadas para capas flotantes.",
+      "Radios contenidos (6–14px) con píldoras para badges y etiquetas.",
+      "Valores de secretos siempre en fuente mono, enmascarados por defecto.",
+      "Ritmo de espaciado 6–24px; tarjetas en grid 1/2/3 columnas según ancho."
+    ],
+    "rules": [
+      { "name": "La Regla del Silencio", "body": "El color decorativo está prohibido. Todo lo que no sea alarma, tag o estado debe vivir en grises puros. Un píxel cromático fuera de su rol es ruido.", "section": "colors" },
+      { "name": "La Regla del Mono Secreto", "body": "Cualquier valor que sea material sensible (clave, contraseña, token) se renderiza en fuente mono y se enmascara por defecto. Si no es mono, no es un secreto.", "section": "typography" },
+      { "name": "La Regla Plana Por Defecto", "body": "Las superficies están planas en reposo. Una tarjeta de secreto jamás tiene sombra; la sombra es una respuesta a estado (flotación, apertura), no una decoración permanente.", "section": "elevation" },
+      { "name": "La Regla del Susurro", "body": "La señal destructiva se comunica con tinta roja tenue (fondo 10%, texto alarma); nunca un botón lleno de rojo.", "section": "components" }
+    ],
+    "dos": [
+      "Do usar bg-primary text-primary-foreground para el proyecto seleccionado y el botón primario; son la única presencia 'llena' del sistema.",
+      "Do enmascarar valores sensibles por defecto y revelar solo por acción explícita (Eye), con copia al portapapeles.",
+      "Do aplicar el rojo destructivo en dosis bajas (bg-destructive/10 text-destructive).",
+      "Do separar superficies con bordes de 1px border-border o tonos bg-muted antes que con sombras.",
+      "Do renderizar claves y valores de secretos en font-mono con truncate.",
+      "Do usar radios contenidos (6–14px) y reservar la píldora completa para badges y tags."
+    ],
+    "donts": [
+      "Don't usar color decorativo fuera de la alarma y la paleta de tags (La Regla del Silencio).",
+      "Don't aplicar sombras a tarjetas o superficies en reposo.",
+      "Don't usar un botón destructivo lleno de rojo; la señal destructiva es tenue y textual.",
+      "Don't revelar valores sensibles automáticamente ni en los resúmenes de tarjeta.",
+      "Don't añadir webfonts o tipografía de marca; la fuente del sistema es la voz tipográfica."
+    ]
+  }
+}

@@ -83,23 +83,25 @@ export function Sidebar() {
   const { projects, selectedProject, selectProject } = useApp()
 
   return (
-    <aside className="flex w-64 shrink-0 flex-col border-r bg-muted/30">
+    <aside className="flex w-full shrink-0 flex-col border-b bg-muted/30 md:w-64 md:border-r md:border-b-0">
       <div className="flex items-center gap-2 border-b px-4 py-4">
-        <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <Vault className="size-4" />
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold leading-none">Secret Vault</span>
-          <span className="text-xs text-muted-foreground">Administrador de secretos</span>
+        <div className="flex items-center gap-2">
+          <div className="flex size-8 items-center justify-center rounded-lg bg-linear-to-br from-primary to-vault text-primary-foreground">
+            <Vault className="size-6" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold leading-none">Secret Vault</span>
+            <span className="text-xs text-muted-foreground">Administrador de secretos</span>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 px-3 py-4">
+      <div className="flex min-h-0 flex-col gap-3 px-3 py-4">
         <NewProjectDialog />
-        <p className="px-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <p className="px-1 text-xs font-medium text-muted-foreground">
           Proyectos ({projects.length})
         </p>
-        <nav className="flex flex-col gap-1">
+        <nav className="flex max-h-32 flex-col gap-1 overflow-y-auto md:max-h-none">
           {projects.length === 0 && (
             <p className="px-1 text-sm text-muted-foreground">
               Aún no hay proyectos. Crea uno para empezar.
@@ -112,7 +114,7 @@ export function Sidebar() {
               className={cn(
                 'flex items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors',
                 selectedProject?.id === project.id
-                  ? 'bg-primary text-primary-foreground'
+                  ? 'bg-vault/10 text-vault ring-1 ring-vault/20'
                   : 'text-muted-foreground hover:bg-muted hover:text-foreground',
               )}
             >

@@ -43,7 +43,7 @@ function CopyButton({ text }: { text: string }) {
       title="Copiar"
       className="text-muted-foreground"
     >
-      {copied ? <Check className="text-emerald-500" /> : <Copy />}
+      {copied ? <Check className="animate-pop text-emerald-500" /> : <Copy />}
     </Button>
   )
 }
@@ -57,7 +57,7 @@ function ValueRow({ icon, label, value, masked = false }: { icon: React.ReactNod
         {icon}
         <span className="text-xs font-medium">{label}</span>
       </span>
-      <code className="min-w-0 flex-1 truncate font-mono text-sm text-foreground">
+      <code className="min-w-0 flex-1 truncate font-mono text-sm leading-5 text-foreground">
         {hidden ? '••••••••••' : value}
       </code>
       {masked && (
@@ -67,7 +67,7 @@ function ValueRow({ icon, label, value, masked = false }: { icon: React.ReactNod
           size="icon-xs"
           onClick={() => setShow(!show)}
           title={show ? 'Ocultar' : 'Mostrar'}
-          className="text-muted-foreground"
+          className="text-muted-foreground active:scale-90"
         >
           {show ? <EyeOff /> : <Eye />}
         </Button>
@@ -79,19 +79,19 @@ function ValueRow({ icon, label, value, masked = false }: { icon: React.ReactNod
 
 export function SecretCard({ secret, onEdit, onDelete }: { secret: Secret; onEdit: (s: Secret) => void; onDelete: (s: Secret) => void }) {
   return (
-    <div className="flex flex-col gap-2.5 rounded-xl border bg-card p-3.5">
+    <div className="flex flex-col gap-2.5 rounded-xl border bg-card p-3.5 transition-colors duration-150 hover:border-ring/50">
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
           <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
             {secret.type === 'env' ? (
-              <Braces className="size-4 text-muted-foreground" />
+              <Braces className="size-4 text-vault" />
             ) : (
-              <KeyRound className="size-4 text-muted-foreground" />
+              <KeyRound className="size-4 text-amber-700 dark:text-amber-400" />
             )}
           </span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium leading-tight">{secret.name}</p>
-            <p className="truncate text-xs text-muted-foreground">
+            <p className="truncate text-sm font-semibold leading-snug tracking-[-0.01em]">{secret.name}</p>
+            <p className="truncate text-xs font-medium text-muted-foreground">
               {secret.type === 'env' ? 'Variable de entorno' : 'Credencial'}
             </p>
           </div>
@@ -134,7 +134,7 @@ export function SecretCard({ secret, onEdit, onDelete }: { secret: Secret; onEdi
         </div>
       )}
 
-      {secret.notes && <p className="line-clamp-2 text-xs text-muted-foreground">{secret.notes}</p>}
+      {secret.notes && <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">{secret.notes}</p>}
 
       {secret.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5">

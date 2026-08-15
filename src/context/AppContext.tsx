@@ -4,6 +4,7 @@ import type { Project, Secret, SecretInput, Tag } from '@/lib/types'
 
 type AppContextValue = {
   ready: boolean
+  error: string | null
   projects: Project[]
   selectedProject: Project | null
   secrets: Secret[]
@@ -13,6 +14,7 @@ type AppContextValue = {
   selectProject: (id: number | null) => void
   setTagFilter: (name: string | null) => void
   setSearch: (q: string) => void
+  retry: () => Promise<void>
   createProject: (name: string, description: string) => Promise<Project>
   updateProject: (id: number, name: string, description: string) => Promise<void>
   deleteProject: (id: number) => Promise<void>
@@ -28,6 +30,7 @@ const AppContext = createContext<AppContextValue | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [projects, setProjects] = useState<Project[]>([])
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [secrets, setSecrets] = useState<Secret[]>([])
@@ -36,13 +39,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [search, setSearch] = useState('')
 
   const loadProjects = useCallback(async () => {
-    const list = await repo.listProjects()
-    setProjects(list)
-    setReady(true)
+    setError(null)
+    try {
+      const list = await repo.listProjects()
+      setProjects(list)
+    } catch {
+      setError('No se pudo abrir la bóveda local. Comprueba el almacenamiento del navegador e inténtalo de nuevo.')
+    } finally {
+      setReady(true)
+    }
   }, [])
 
   useEffect(() => {
-    loadProjects().catch(console.error)
+    void loadProjects()
   }, [loadProjects])
 
   const selectProject = useCallback(
@@ -140,6 +149,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const value: AppContextValue = {
     ready,
+    error,
     projects,
     selectedProject,
     secrets: filteredSecrets,
@@ -149,6 +159,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     selectProject,
     setTagFilter,
     setSearch,
+    retry: loadProjects,
     createProject,
     updateProject,
     deleteProject,
