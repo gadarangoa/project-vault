@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Braces, KeyRound } from 'lucide-react'
 import { useApp } from '@/context/AppContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   Dialog,
@@ -22,6 +21,7 @@ type Props = {
   open: boolean
   onOpenChange: (open: boolean) => void
   secret?: Secret | null
+  secretType?: SecretType
 }
 
 function emptyInput(projectId: number, type: SecretType): SecretInput {
@@ -55,19 +55,19 @@ function inputFromSecret(projectId: number, secret?: Secret | null): SecretInput
   }
 }
 
-export function SecretDialog({ open, onOpenChange, secret }: Props) {
+export function SecretDialog({ open, onOpenChange, secret, secretType = 'env' }: Props) {
   const { selectedProject, createSecret, updateSecret } = useApp()
   const editing = Boolean(secret)
   const [input, setInput] = useState<SecretInput>(() =>
-    inputFromSecret(selectedProject?.id ?? 0, secret),
+    secret ? inputFromSecret(selectedProject?.id ?? 0, secret) : emptyInput(selectedProject?.id ?? 0, secretType),
   )
   const [credKind, setCredKind] = useState<'username' | 'email'>(secret?.email ? 'email' : 'username')
 
   useEffect(() => {
     if (!open) return
-    setInput(inputFromSecret(selectedProject?.id ?? 0, secret))
+    setInput(secret ? inputFromSecret(selectedProject?.id ?? 0, secret) : emptyInput(selectedProject?.id ?? 0, secretType))
     setCredKind(secret?.email ? 'email' : 'username')
-  }, [open, secret, selectedProject])
+  }, [open, secret, selectedProject, secretType])
 
   const set = <K extends keyof SecretInput>(key: K, value: SecretInput[K]) =>
     setInput((prev) => ({ ...prev, [key]: value }))
@@ -101,9 +101,9 @@ export function SecretDialog({ open, onOpenChange, secret }: Props) {
     >
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>{editing ? 'Editar secreto' : 'Nuevo secreto'}</DialogTitle>
+          <DialogTitle>{editing ? (secretType === 'credential' ? 'Editar credencial' : 'Editar secreto') : (secretType === 'credential' ? 'Nueva credencial' : 'Nuevo secreto')}</DialogTitle>
           <DialogDescription>
-            Guarda variables de entorno o credenciales con etiquetas.
+            {secretType === 'credential' ? 'Guarda una credencial con etiquetas.' : 'Guarda una variable de entorno con etiquetas.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -119,19 +119,7 @@ export function SecretDialog({ open, onOpenChange, secret }: Props) {
             />
           </div>
 
-          <Tabs
-            value={input.type}
-            onValueChange={(v) => set('type', v as SecretType)}
-            className="w-full"
-          >
-            <TabsList className="w-full">
-              <TabsTrigger value="env" className="flex-1">
-                <Braces className="size-3.5" /> Variable de entorno
-              </TabsTrigger>
-              <TabsTrigger value="credential" className="flex-1">
-                <KeyRound className="size-3.5" /> Credencial
-              </TabsTrigger>
-            </TabsList>
+          <Tabs value={input.type} className="w-full">
 
             <TabsContent value="env" className="grid gap-3">
               <div className="grid grid-cols-2 gap-3">
@@ -225,7 +213,7 @@ export function SecretDialog({ open, onOpenChange, secret }: Props) {
 
         <DialogFooter>
           <Button onClick={submit} disabled={!isValid}>
-            {editing ? 'Guardar cambios' : 'Guardar secreto'}
+            {editing ? 'Guardar cambios' : secretType === 'credential' ? 'Guardar credencial' : 'Guardar secreto'}
           </Button>
         </DialogFooter>
       </DialogContent>

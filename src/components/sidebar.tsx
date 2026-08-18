@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { FolderPlus, FolderOpen, Folder, Vault } from 'lucide-react'
+import { FolderPlus, FolderOpen, Folder, Vault, KeyRound, Braces, Layers3, FileText } from 'lucide-react'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useApp } from '@/context/AppContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -18,6 +19,7 @@ import { cn } from '@/lib/utils'
 
 function NewProjectDialog() {
   const { createProject, selectProject } = useApp()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -29,6 +31,7 @@ function NewProjectDialog() {
     setDescription('')
     setOpen(false)
     selectProject(project.id)
+    navigate(`/projects/${project.id}/secrets`)
   }
 
   return (
@@ -81,6 +84,7 @@ function NewProjectDialog() {
 
 export function Sidebar() {
   const { projects, selectedProject, selectProject } = useApp()
+  const navigate = useNavigate()
 
   return (
     <aside className="flex w-full shrink-0 flex-col border-b bg-muted/30 md:w-64 md:border-r md:border-b-0">
@@ -108,23 +112,34 @@ export function Sidebar() {
             </p>
           )}
           {projects.map((project) => (
-            <button
-              key={project.id}
-              onClick={() => selectProject(selectedProject?.id === project.id ? null : project.id)}
-              className={cn(
-                'flex items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors',
-                selectedProject?.id === project.id
-                  ? 'bg-vault/10 text-vault ring-1 ring-vault/20'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+            <div key={project.id}>
+              <button
+                onClick={() => {
+                  if (selectedProject?.id === project.id) return
+                  selectProject(project.id)
+                  navigate(`/projects/${project.id}/secrets`)
+                }}
+                className={cn(
+                  'flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors',
+                  selectedProject?.id === project.id
+                    ? 'bg-vault/10 text-vault ring-1 ring-vault/20'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                )}
+              >
+                {selectedProject?.id === project.id ? <FolderOpen className="size-4 shrink-0" /> : <Folder className="size-4 shrink-0" />}
+                <span className="truncate">{project.name}</span>
+              </button>
+              {selectedProject?.id === project.id && (
+                <div className="ml-4 flex flex-col gap-0.5 border-l pl-2">
+                  {[
+                    { to: 'credentials', label: 'Credenciales', icon: KeyRound },
+                    { to: 'secrets', label: 'Secretos', icon: Braces },
+                    { to: 'variable-groups', label: 'Grupos de variables', icon: Layers3 },
+                    { to: 'notes', label: 'Notas', icon: FileText },
+                  ].map(({ to, label, icon: Icon }) => <NavLink key={to} to={`/projects/${project.id}/${to}`} className={({ isActive }) => cn('flex items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors', isActive ? 'bg-vault/10 font-medium text-vault' : 'text-muted-foreground hover:bg-muted hover:text-foreground')}><Icon className="size-3 shrink-0" />{label}</NavLink>)}
+                </div>
               )}
-            >
-              {selectedProject?.id === project.id ? (
-                <FolderOpen className="size-4 shrink-0" />
-              ) : (
-                <Folder className="size-4 shrink-0" />
-              )}
-              <span className="truncate">{project.name}</span>
-            </button>
+            </div>
           ))}
         </nav>
       </div>
