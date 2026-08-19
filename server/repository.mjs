@@ -3,6 +3,8 @@ import { db } from './db.mjs'
 const project = (row) => ({ id: row.id, name: row.name, description: row.description, createdAt: row.created_at, updatedAt: row.updated_at })
 const tag = (row) => ({ id: row.id, projectId: row.project_id, name: row.name, color: row.color })
 const secret = (row) => ({ id: row.id, projectId: row.project_id, name: row.name, type: row.type, key: row.key, value: row.value, username: row.username, email: row.email, password: row.password, notes: row.notes, createdAt: row.created_at, updatedAt: row.updated_at, tags: [] })
+const variable = (row) => ({ id: row.id, groupId: row.group_id, key: row.key, value: row.value, position: row.position })
+const variableGroup = (row, variables = []) => ({ id: row.id, projectId: row.project_id, name: row.name, description: row.description, createdAt: row.created_at, updatedAt: row.updated_at, variables })
 
 const insertId = (result) => Number(result.lastInsertRowid)
 
@@ -71,6 +73,68 @@ export function updateTag(id, { name, color }) {
 
 export function deleteTag(id) {
   db.prepare('DELETE FROM tags WHERE id = ?').run(id)
+}
+
+function getVariableGroup(id) {
+  const row = db.prepare('SELECT * FROM variable_groups WHERE id = ?').get(id)
+  if (!row) return null
+  const variables = db.prepare('SELECT * FROM variable_group_variables WHERE group_id = ? ORDER BY position, id').all(id).map(variable)
+  return variableGroup(row, variables)
+}
+
+function validVariables(variables = []) {
+  const result = []
+  const keys = new Set()
+  for (const item of variables) {
+    const key = String(item.key || '').trim()
+    if (!key && !String(item.value || '')) continue
+    if (!key) throw new Error('Cada variable debe tener una clave')
+    if (keys.has(key)) throw new Error(`La clave «${key}» está repetida`)
+    keys.add(key)
+    result.push({ key, value: String(item.value || '') })
+  }
+  return result
+}
+
+function saveVariables(groupId, variables) {
+  db.prepare('DELETE FROM variable_group_variables WHERE group_id = ?').run(groupId)
+  const insert = db.prepare('INSERT INTO variable_group_variables (group_id, key, value, position) VALUES (?, ?, ?, ?)')
+  variables.forEach((item, position) => insert.run(groupId, item.key, item.value, position))
+}
+
+export function listVariableGroups(projectId) {
+  return db.prepare('SELECT * FROM variable_groups WHERE project_id = ? ORDER BY updated_at DESC, id DESC').all(projectId).map((row) => getVariableGroup(row.id))
+}
+
+export function createVariableGroup(input) {
+  const variables = validVariables(input.variables)
+  const result = db.prepare('INSERT INTO variable_groups (project_id, name, description) VALUES (?, ?, ?)').run(input.projectId, String(input.name || '').trim(), String(input.description || '').trim())
+  const id = insertId(result)
+  saveVariables(id, variables)
+  return getVariableGroup(id)
+}
+
+export function updateVariableGroup(id, input) {
+  const variables = validVariables(input.variables)
+  db.exec('BEGIN')
+  try {
+    db.prepare("UPDATE variable_groups SET name = ?, description = ?, updated_at = datetime('now') WHERE id = ?").run(String(input.name || '').trim(), String(input.description || '').trim(), id)
+    saveVariables(id, variables)
+    db.exec('COMMIT')
+  } catch (error) {
+    db.exec('ROLLBACK')
+    throw error
+  }
+}
+
+export function duplicateVariableGroup(id) {
+  const original = getVariableGroup(id)
+  if (!original) return null
+  return createVariableGroup({ projectId: original.projectId, name: `${original.name} copia`, description: original.description, variables: original.variables })
+}
+
+export function deleteVariableGroup(id) {
+  db.prepare('DELETE FROM variable_groups WHERE id = ?').run(id)
 }
 
 function setSecretTags(secretId, tagIds) {

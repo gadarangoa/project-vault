@@ -71,6 +71,7 @@ Cada instalación mantiene su propia base. Compartir el repositorio o la imagen 
 ### Requisitos
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- Node.js 22 o superior para ejecutar el modo local (incluye `node:sqlite`)
 - Git, si vas a clonar el repositorio
 
 ### Ejecutar con Docker
@@ -117,6 +118,8 @@ Instala las dependencias:
 npm install
 ```
 
+El modo local no requiere Docker: la API usa SQLite directamente en `data/secret-vault.sqlite` y Vite sirve la interfaz con recarga en caliente.
+
 En una terminal, inicia la API:
 
 ```bash
@@ -130,6 +133,8 @@ npm run dev
 ```
 
 Abre **[http://localhost:5174](http://localhost:5174)**.
+
+La API local queda disponible en `http://127.0.0.1:3001` y Vite redirige automáticamente las llamadas `/api` hacia ella. Para detener ambos procesos, presiona `Ctrl+C` en cada terminal.
 
 En desarrollo, Vite redirige `/api` a `localhost:3001` y la base se crea en `data/secret-vault.sqlite`. Ese directorio está excluido de Git.
 

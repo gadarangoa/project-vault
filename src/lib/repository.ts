@@ -1,4 +1,4 @@
-import type { Project, Secret, SecretInput, Tag } from './types'
+import type { Project, Secret, SecretInput, Tag, VariableGroup, VariableGroupInput } from './types'
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`/api${path}`, {
@@ -38,3 +38,19 @@ export function updateTag(id: number, name: string, color: string): Promise<void
   return request<void>(`/tags/${id}`, { method: 'PATCH', body: JSON.stringify({ name, color }) })
 }
 export function deleteTag(id: number): Promise<void> { return request<void>(`/tags/${id}`, { method: 'DELETE' }) }
+
+export function listVariableGroups(projectId: number): Promise<VariableGroup[]> {
+  return request<VariableGroup[]>(`/projects/${projectId}/variable-groups`)
+}
+export function createVariableGroup(input: VariableGroupInput): Promise<VariableGroup> {
+  return request<VariableGroup>('/variable-groups', { method: 'POST', body: JSON.stringify(input) })
+}
+export function updateVariableGroup(id: number, input: VariableGroupInput): Promise<void> {
+  return request<void>(`/variable-groups/${id}`, { method: 'PATCH', body: JSON.stringify(input) })
+}
+export function duplicateVariableGroup(id: number): Promise<VariableGroup> {
+  return request<VariableGroup>(`/variable-groups/${id}/duplicate`, { method: 'POST' })
+}
+export function deleteVariableGroup(id: number): Promise<void> {
+  return request<void>(`/variable-groups/${id}`, { method: 'DELETE' })
+}

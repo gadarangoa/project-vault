@@ -43,3 +43,33 @@ export type SecretInput = {
   notes: string
   tagIds: number[]
 }
+
+export type VariableGroupVariable = {
+  id: number
+  groupId: number
+  key: string
+  value: string
+  position: number
+}
+
+export type VariableGroup = {
+  id: number
+  projectId: number
+  name: string
+  description: string
+  createdAt: string
+  updatedAt: string
+  variables: VariableGroupVariable[]
+}
+
+export type VariableGroupVariableInput = {
+  key: string
+  value: string
+}
+
+export type VariableGroupInput = {
+  projectId: number
+  name: string
+  description: string
+  variables: VariableGroupVariableInput[]
+}

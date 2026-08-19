@@ -41,9 +41,27 @@ db.exec(`
     tag_id INTEGER NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
     PRIMARY KEY (secret_id, tag_id)
   );
+  CREATE TABLE IF NOT EXISTS variable_groups (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE TABLE IF NOT EXISTS variable_group_variables (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_id INTEGER NOT NULL REFERENCES variable_groups(id) ON DELETE CASCADE,
+    key TEXT NOT NULL,
+    value TEXT NOT NULL DEFAULT '',
+    position INTEGER NOT NULL DEFAULT 0,
+    UNIQUE (group_id, key)
+  );
   CREATE INDEX IF NOT EXISTS idx_secrets_project ON secrets(project_id);
   CREATE INDEX IF NOT EXISTS idx_tags_project ON tags(project_id);
   CREATE INDEX IF NOT EXISTS idx_secret_tags_tag ON secret_tags(tag_id);
+  CREATE INDEX IF NOT EXISTS idx_variable_groups_project ON variable_groups(project_id);
+  CREATE INDEX IF NOT EXISTS idx_variable_group_variables_group ON variable_group_variables(group_id);
 `)
 
 export function closeDb() {

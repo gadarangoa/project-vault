@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import * as repo from '@/lib/repository'
-import type { Project, Secret, SecretInput, Tag } from '@/lib/types'
+import type { Project, Secret, SecretInput, Tag, VariableGroup, VariableGroupInput } from '@/lib/types'
 
 type AppContextValue = {
   ready: boolean
@@ -9,6 +9,7 @@ type AppContextValue = {
   selectedProject: Project | null
   secrets: Secret[]
   tags: Tag[]
+  variableGroups: VariableGroup[]
   tagFilter: string | null
   search: string
   selectProject: (id: number | null) => void
@@ -24,6 +25,10 @@ type AppContextValue = {
   createTag: (name: string, color: string) => Promise<Tag>
   updateTag: (id: number, name: string, color: string) => Promise<void>
   deleteTag: (id: number) => Promise<void>
+  createVariableGroup: (input: VariableGroupInput) => Promise<VariableGroup>
+  updateVariableGroup: (id: number, input: VariableGroupInput) => Promise<void>
+  duplicateVariableGroup: (id: number) => Promise<VariableGroup>
+  deleteVariableGroup: (id: number) => Promise<void>
 }
 
 const AppContext = createContext<AppContextValue | null>(null)
@@ -35,6 +40,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [secrets, setSecrets] = useState<Secret[]>([])
   const [tags, setTags] = useState<Tag[]>([])
+  const [variableGroups, setVariableGroups] = useState<VariableGroup[]>([])
   const [tagFilter, setTagFilter] = useState<string | null>(null)
   const [search, setSearch] = useState('')
 
@@ -59,11 +65,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setSelectedId(id)
       setTagFilter(null)
       setSecrets([])
-      setTags([])
+    setTags([])
+      setVariableGroups([])
       if (id === null) return
-      const [secretList, tagList] = await Promise.all([repo.listSecrets(id), repo.listTags(id)])
+      const [secretList, tagList, groupList] = await Promise.all([repo.listSecrets(id), repo.listTags(id), repo.listVariableGroups(id)])
       setSecrets(secretList)
       setTags(tagList)
+      setVariableGroups(groupList)
     },
     [],
   )
@@ -108,6 +116,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setSelectedId(null)
       setSecrets([])
       setTags([])
+      setVariableGroups([])
     }
   }, [selectedId])
 
@@ -147,6 +156,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, [selectedId])
 
+  const createVariableGroup = useCallback(async (input: VariableGroupInput) => {
+    const group = await repo.createVariableGroup(input)
+    setVariableGroups((prev) => [group, ...prev])
+    return group
+  }, [])
+
+  const updateVariableGroup = useCallback(async (id: number, input: VariableGroupInput) => {
+    await repo.updateVariableGroup(id, input)
+    const list = await repo.listVariableGroups(input.projectId)
+    setVariableGroups(list)
+  }, [])
+
+  const duplicateVariableGroup = useCallback(async (id: number) => {
+    const group = await repo.duplicateVariableGroup(id)
+    setVariableGroups((prev) => [group, ...prev])
+    return group
+  }, [])
+
+  const deleteVariableGroup = useCallback(async (id: number) => {
+    await repo.deleteVariableGroup(id)
+    setVariableGroups((prev) => prev.filter((group) => group.id !== id))
+  }, [])
+
   const value: AppContextValue = {
     ready,
     error,
@@ -154,6 +186,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     selectedProject,
     secrets: filteredSecrets,
     tags,
+    variableGroups,
     tagFilter,
     search,
     selectProject,
@@ -169,6 +202,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     createTag,
     updateTag,
     deleteTag,
+    createVariableGroup,
+    updateVariableGroup,
+    duplicateVariableGroup,
+    deleteVariableGroup,
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

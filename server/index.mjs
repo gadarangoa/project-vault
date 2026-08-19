@@ -3,7 +3,9 @@ import { closeDb } from './db.mjs'
 import * as repo from './repository.mjs'
 
 const port = Number(process.env.PORT || 3001)
-const host = process.env.HOST || '0.0.0.0'
+// Keep the local development API private by default. Docker overrides this
+// with HOST=0.0.0.0 in docker-compose.yml so the web container can reach it.
+const host = process.env.HOST || '127.0.0.1'
 
 function send(response, status, body) {
   response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' })
@@ -40,6 +42,8 @@ const server = createServer(async (request, response) => {
       if (request.method === 'GET') { result = repo.listSecrets(id); handled = true }
     } else if (parts[1] === 'projects' && parts[3] === 'tags') {
       if (request.method === 'GET') { result = repo.listTags(id); handled = true }
+    } else if (parts[1] === 'projects' && parts[3] === 'variable-groups') {
+      if (request.method === 'GET') { result = repo.listVariableGroups(id); handled = true }
     } else if (parts[1] === 'projects' && parts.length === 3) {
       if (request.method === 'GET') { result = repo.getProject(id); handled = true }
       else if (request.method === 'PATCH') { repo.updateProject(id, payload); handled = true }
@@ -54,6 +58,13 @@ const server = createServer(async (request, response) => {
     } else if (parts[1] === 'tags' && parts.length === 3) {
       if (request.method === 'PATCH') { repo.updateTag(id, payload); handled = true }
       else if (request.method === 'DELETE') { repo.deleteTag(id); handled = true }
+    } else if (parts[1] === 'variable-groups' && parts[3] === 'duplicate') {
+      if (request.method === 'POST') { result = repo.duplicateVariableGroup(id); handled = true }
+    } else if (parts[1] === 'variable-groups' && parts.length === 2) {
+      if (request.method === 'POST') { result = repo.createVariableGroup(payload); handled = true }
+    } else if (parts[1] === 'variable-groups' && parts.length === 3) {
+      if (request.method === 'PATCH') { repo.updateVariableGroup(id, payload); handled = true }
+      else if (request.method === 'DELETE') { repo.deleteVariableGroup(id); handled = true }
     }
 
     if (!handled) return send(response, 404, { error: 'Ruta no encontrada' })
