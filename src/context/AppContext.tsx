@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import * as repo from '@/lib/repository'
-import type { Project, Secret, SecretInput, Tag, VariableGroup, VariableGroupInput } from '@/lib/types'
+import type { Note, NoteInput, Project, Secret, SecretInput, Tag, VariableGroup, VariableGroupInput } from '@/lib/types'
 
 type AppContextValue = {
   ready: boolean
@@ -10,6 +10,7 @@ type AppContextValue = {
   secrets: Secret[]
   tags: Tag[]
   variableGroups: VariableGroup[]
+  notes: Note[]
   tagFilter: string | null
   search: string
   selectProject: (id: number | null) => void
@@ -29,6 +30,11 @@ type AppContextValue = {
   updateVariableGroup: (id: number, input: VariableGroupInput) => Promise<void>
   duplicateVariableGroup: (id: number) => Promise<VariableGroup>
   deleteVariableGroup: (id: number) => Promise<void>
+  listNotes: (projectId: number) => Promise<Note[]>
+  createNote: (input: NoteInput) => Promise<Note>
+  updateNote: (id: number, input: NoteInput) => Promise<Note>
+  toggleNotePin: (id: number) => Promise<Note>
+  deleteNote: (id: number) => Promise<void>
 }
 
 const AppContext = createContext<AppContextValue | null>(null)
@@ -41,6 +47,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [secrets, setSecrets] = useState<Secret[]>([])
   const [tags, setTags] = useState<Tag[]>([])
   const [variableGroups, setVariableGroups] = useState<VariableGroup[]>([])
+  const [notes, setNotes] = useState<Note[]>([])
   const [tagFilter, setTagFilter] = useState<string | null>(null)
   const [search, setSearch] = useState('')
 
@@ -67,11 +74,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setSecrets([])
     setTags([])
       setVariableGroups([])
+      setNotes([])
       if (id === null) return
-      const [secretList, tagList, groupList] = await Promise.all([repo.listSecrets(id), repo.listTags(id), repo.listVariableGroups(id)])
+      const [secretList, tagList, groupList, noteList] = await Promise.all([repo.listSecrets(id), repo.listTags(id), repo.listVariableGroups(id), repo.listNotes(id)])
       setSecrets(secretList)
       setTags(tagList)
       setVariableGroups(groupList)
+      setNotes(noteList)
     },
     [],
   )
@@ -117,6 +126,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setSecrets([])
       setTags([])
       setVariableGroups([])
+      setNotes([])
     }
   }, [selectedId])
 
@@ -179,6 +189,35 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setVariableGroups((prev) => prev.filter((group) => group.id !== id))
   }, [])
 
+  const listNotes = useCallback(async (projectId: number) => {
+    const list = await repo.listNotes(projectId)
+    if (projectId === selectedId) setNotes(list)
+    return list
+  }, [selectedId])
+
+  const createNote = useCallback(async (input: NoteInput) => {
+    const note = await repo.createNote(input)
+    if (input.projectId === selectedId) setNotes((prev) => [note, ...prev])
+    return note
+  }, [selectedId])
+
+  const updateNote = useCallback(async (id: number, input: NoteInput) => {
+    const note = await repo.updateNote(id, input)
+    if (input.projectId === selectedId) setNotes((prev) => prev.map((item) => item.id === id ? note : item))
+    return note
+  }, [selectedId])
+
+  const toggleNotePin = useCallback(async (id: number) => {
+    const note = await repo.toggleNotePin(id)
+    setNotes((prev) => prev.map((item) => item.id === id ? note : item))
+    return note
+  }, [])
+
+  const deleteNote = useCallback(async (id: number) => {
+    await repo.deleteNote(id)
+    setNotes((prev) => prev.filter((item) => item.id !== id))
+  }, [])
+
   const value: AppContextValue = {
     ready,
     error,
@@ -187,6 +226,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     secrets: filteredSecrets,
     tags,
     variableGroups,
+    notes,
     tagFilter,
     search,
     selectProject,
@@ -206,6 +246,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     updateVariableGroup,
     duplicateVariableGroup,
     deleteVariableGroup,
+    listNotes,
+    createNote,
+    updateNote,
+    toggleNotePin,
+    deleteNote,
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

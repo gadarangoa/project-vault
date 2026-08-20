@@ -83,8 +83,7 @@ function GroupEditor({ open, onOpenChange, group }: { open: boolean; onOpenChang
   </Dialog>
 }
 
-export function ProjectPlaceholderPage({ kind }: { kind: 'groups' | 'notes' }) {
-  if (kind === 'notes') return <Empty className="min-h-[28rem]"><EmptyHeader><EmptyMedia variant="icon"><Layers3 /></EmptyMedia><EmptyTitle>Notas</EmptyTitle><EmptyDescription>Esta funcionalidad estará disponible próximamente.</EmptyDescription></EmptyHeader></Empty>
+export function ProjectPlaceholderPage() {
   return <VariableGroupsPage />
 }
 

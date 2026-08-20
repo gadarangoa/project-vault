@@ -1,36 +1,317 @@
-import { useEffect, useState } from 'react'
-import { BrowserRouter, Navigate, Outlet, Route, Routes, useNavigate, useParams } from 'react-router-dom'
-import { Folder, KeyRound, MoreHorizontal, Moon, Pencil, Sun, Trash2 } from 'lucide-react'
-import { useTheme } from 'next-themes'
-import { useApp } from '@/context/AppContext'
-import { Sidebar } from '@/components/sidebar'
-import { ProjectPlaceholderPage } from '@/pages/project-placeholder-page'
-import { ProjectSecretsPage } from '@/pages/project-secrets-page'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { useEffect, useState } from "react";
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import {
+  Folder,
+  KeyRound,
+  MoreHorizontal,
+  Moon,
+  Pencil,
+  Sun,
+  Trash2,
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import { useApp } from "@/context/AppContext";
+import { Sidebar } from "@/components/sidebar";
+import { ProjectPlaceholderPage } from "@/pages/project-placeholder-page";
+import { ProjectSecretsPage } from "@/pages/project-secrets-page";
+import {
+  ProjectNoteEditorPage,
+  ProjectNotesPage,
+} from "@/pages/project-notes-page";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
-function ProjectSettings({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
-  const { selectedProject, updateProject, deleteProject, selectProject } = useApp()
-  const [name, setName] = useState(''); const [description, setDescription] = useState(''); const [confirmDelete, setConfirmDelete] = useState(false)
-  useEffect(() => { if (open) { setName(selectedProject?.name ?? ''); setDescription(selectedProject?.description ?? '') } }, [open, selectedProject])
-  return <><Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="sm:max-w-md"><DialogHeader><DialogTitle>Ajustes del proyecto</DialogTitle><DialogDescription>Edita o elimina el proyecto.</DialogDescription></DialogHeader><div className="grid gap-3"><div className="grid gap-2"><Label htmlFor="project-name">Nombre</Label><Input id="project-name" value={name} onChange={(e) => setName(e.target.value)} /></div><div className="grid gap-2"><Label htmlFor="project-description">Descripción</Label><Textarea id="project-description" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} /></div></div><DialogFooter><Button variant="outline" className="mr-auto text-destructive" onClick={() => setConfirmDelete(true)}><Trash2 data-icon="inline-start" /> Eliminar</Button><Button disabled={!name.trim()} onClick={async () => { if (selectedProject) await updateProject(selectedProject.id, name.trim(), description.trim()); onOpenChange(false) }}>Guardar</Button></DialogFooter></DialogContent></Dialog><AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>¿Eliminar este proyecto?</AlertDialogTitle><AlertDialogDescription>Se eliminarán todos los elementos de «{selectedProject?.name}». Esta acción no se puede deshacer.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction variant="destructive" onClick={async () => { if (selectedProject) await deleteProject(selectedProject.id); setConfirmDelete(false); onOpenChange(false); selectProject(null) }}>Eliminar</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog></>
+function ProjectSettings({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const { selectedProject, updateProject, deleteProject, selectProject } =
+    useApp();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  useEffect(() => {
+    if (open) {
+      setName(selectedProject?.name ?? "");
+      setDescription(selectedProject?.description ?? "");
+    }
+  }, [open, selectedProject]);
+  return (
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Ajustes del proyecto</DialogTitle>
+            <DialogDescription>Edita o elimina el proyecto.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <div className="grid gap-2">
+              <Label htmlFor="project-name">Nombre</Label>
+              <Input
+                id="project-name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="project-description">Descripción</Label>
+              <Textarea
+                id="project-description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              className="mr-auto text-destructive"
+              onClick={() => setConfirmDelete(true)}
+            >
+              <Trash2 data-icon="inline-start" /> Eliminar
+            </Button>
+            <Button
+              disabled={!name.trim()}
+              onClick={async () => {
+                if (selectedProject)
+                  await updateProject(
+                    selectedProject.id,
+                    name.trim(),
+                    description.trim(),
+                  );
+                onOpenChange(false);
+              }}
+            >
+              Guardar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar este proyecto?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Se eliminarán todos los elementos de «{selectedProject?.name}».
+              Esta acción no se puede deshacer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={async () => {
+                if (selectedProject) await deleteProject(selectedProject.id);
+                setConfirmDelete(false);
+                onOpenChange(false);
+                selectProject(null);
+              }}
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
 }
 
 function ProjectLayout() {
-  const { projectId } = useParams(); const navigate = useNavigate(); const { ready, selectedProject, projects, selectProject } = useApp(); const { resolvedTheme, setTheme } = useTheme(); const [settingsOpen, setSettingsOpen] = useState(false); const id = Number(projectId)
-  useEffect(() => { if (ready && projects.some((project) => project.id === id) && selectedProject?.id !== id) void selectProject(id) }, [ready, projects, id, selectedProject, selectProject])
-  useEffect(() => { if (ready && !projects.some((project) => project.id === id)) navigate('/', { replace: true }) }, [ready, projects, id, navigate])
-  if (!ready || !selectedProject) return <div className="flex min-h-full items-center justify-center text-sm text-muted-foreground">Cargando proyecto...</div>
-  return <div className="flex min-h-0 flex-1 flex-col animate-vault-open"><header className="flex items-center justify-between gap-4 border-b bg-vault/5 px-6 py-4 dark:bg-vault/10"><div className="flex min-w-0 items-center gap-3"><div className="flex size-10 items-center justify-center rounded-xl bg-vault/10 ring-1 ring-vault/20"><Folder className="text-vault" /></div><div className="min-w-0"><h1 className="truncate text-xl font-semibold leading-tight tracking-tight">{selectedProject.name}</h1>{selectedProject.description && <p className="truncate text-xs text-muted-foreground">{selectedProject.description}</p>}</div></div><div className="flex items-center gap-2"><Button variant="ghost" size="icon-sm" onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')} title="Cambiar tema">{resolvedTheme === 'dark' ? <Sun /> : <Moon />}<span className="sr-only">Cambiar tema</span></Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="icon-sm"><MoreHorizontal /><span className="sr-only">Acciones del proyecto</span></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem onClick={() => setSettingsOpen(true)}><Pencil data-icon="inline-start" /> Editar proyecto</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem variant="destructive" onClick={() => setSettingsOpen(true)}><Trash2 data-icon="inline-start" /> Eliminar proyecto</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div></header><div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-5"><Outlet /></div><ProjectSettings open={settingsOpen} onOpenChange={setSettingsOpen} /></div>
+  const { projectId } = useParams();
+  const navigate = useNavigate();
+  const { ready, selectedProject, projects, selectProject } = useApp();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const id = Number(projectId);
+  useEffect(() => {
+    if (
+      ready &&
+      projects.some((project) => project.id === id) &&
+      selectedProject?.id !== id
+    )
+      void selectProject(id);
+  }, [ready, projects, id, selectedProject, selectProject]);
+  useEffect(() => {
+    if (ready && !projects.some((project) => project.id === id))
+      navigate("/", { replace: true });
+  }, [ready, projects, id, navigate]);
+  if (!ready || !selectedProject)
+    return (
+      <div className="flex min-h-full items-center justify-center text-sm text-muted-foreground">
+        Cargando proyecto...
+      </div>
+    );
+  return (
+    <div className="flex min-h-0 flex-1 flex-col animate-vault-open">
+      <header className="flex items-center justify-between gap-4 border-b bg-vault/5 px-6 py-3 dark:bg-vault/10">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-vault/10 ring-1 ring-vault/20">
+            <Folder size={20} className="text-vault" />
+          </div>
+          <div className="min-w-0">
+            <h1 className="truncate text-lg font-semibold leading-tight tracking-tight">
+              {selectedProject.name}
+            </h1>
+            {selectedProject.description && (
+              <p className="truncate text-xs text-muted-foreground">
+                {selectedProject.description}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() =>
+              setTheme(resolvedTheme === "dark" ? "light" : "dark")
+            }
+            title="Cambiar tema"
+          >
+            {resolvedTheme === "dark" ? <Sun /> : <Moon />}
+            <span className="sr-only">Cambiar tema</span>
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon-sm">
+                <MoreHorizontal />
+                <span className="sr-only">Acciones del proyecto</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
+                <Pencil data-icon="inline-start" /> Editar proyecto
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => setSettingsOpen(true)}
+              >
+                <Trash2 data-icon="inline-start" /> Eliminar proyecto
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </header>
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-5">
+        <Outlet />
+      </div>
+      <ProjectSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
+    </div>
+  );
 }
 
-function NoProject() { return <Empty className="m-6 min-h-[28rem]"><EmptyHeader><EmptyMedia variant="icon"><Folder /></EmptyMedia><EmptyTitle>Selecciona un proyecto</EmptyTitle><EmptyDescription>Elige un proyecto del menú lateral para ver sus categorías.</EmptyDescription></EmptyHeader></Empty> }
+function NoProject() {
+  return (
+    <Empty className="m-6 min-h-[28rem]">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Folder />
+        </EmptyMedia>
+        <EmptyTitle>Selecciona un proyecto</EmptyTitle>
+        <EmptyDescription>
+          Elige un proyecto del menú lateral para ver sus categorías.
+        </EmptyDescription>
+      </EmptyHeader>
+    </Empty>
+  );
+}
 
-function AppRoutes() { const { ready, error, retry } = useApp(); if (!ready) return <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">Cargando base de datos local...</div>; if (error) return <div className="flex min-h-screen flex-col items-center justify-center gap-4 text-center"><KeyRound className="text-destructive" /><p className="text-sm text-muted-foreground">{error}</p><Button onClick={() => void retry()}>Reintentar</Button></div>; return <div className="flex h-screen flex-col overflow-hidden md:flex-row"><Sidebar /><main className="flex min-h-0 flex-1 flex-col overflow-hidden"><Routes><Route path="/" element={<NoProject />} /><Route path="/projects/:projectId" element={<ProjectLayout />}><Route index element={<Navigate to="secrets" replace />} /><Route path="secrets" element={<ProjectSecretsPage secretType="env" />} /><Route path="credentials" element={<ProjectSecretsPage secretType="credential" />} /><Route path="variable-groups" element={<ProjectPlaceholderPage kind="groups" />} /><Route path="notes" element={<ProjectPlaceholderPage kind="notes" />} /></Route><Route path="*" element={<Navigate to="/" replace />} /></Routes></main></div> }
-export default function App() { return <BrowserRouter><AppRoutes /></BrowserRouter> }
+function AppRoutes() {
+  const { ready, error, retry } = useApp();
+  if (!ready)
+    return (
+      <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
+        Cargando base de datos local...
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 text-center">
+        <KeyRound className="text-destructive" />
+        <p className="text-sm text-muted-foreground">{error}</p>
+        <Button onClick={() => void retry()}>Reintentar</Button>
+      </div>
+    );
+  return (
+    <div className="flex h-screen flex-col overflow-hidden md:flex-row">
+      <Sidebar />
+      <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <Routes>
+          <Route path="/" element={<NoProject />} />
+          <Route path="/projects/:projectId" element={<ProjectLayout />}>
+            <Route index element={<Navigate to="secrets" replace />} />
+            <Route
+              path="secrets"
+              element={<ProjectSecretsPage secretType="env" />}
+            />
+            <Route
+              path="credentials"
+              element={<ProjectSecretsPage secretType="credential" />}
+            />
+            <Route
+              path="variable-groups"
+              element={<ProjectPlaceholderPage />}
+            />
+            <Route path="notes" element={<ProjectNotesPage />} />
+            <Route path="notes/:noteId" element={<ProjectNoteEditorPage />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  );
+}

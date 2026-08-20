@@ -1,4 +1,4 @@
-import type { Project, Secret, SecretInput, Tag, VariableGroup, VariableGroupInput } from './types'
+import type { Note, NoteInput, Project, Secret, SecretInput, Tag, VariableGroup, VariableGroupInput } from './types'
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`/api${path}`, {
@@ -54,3 +54,9 @@ export function duplicateVariableGroup(id: number): Promise<VariableGroup> {
 export function deleteVariableGroup(id: number): Promise<void> {
   return request<void>(`/variable-groups/${id}`, { method: 'DELETE' })
 }
+
+export function listNotes(projectId: number): Promise<Note[]> { return request<Note[]>(`/projects/${projectId}/notes`) }
+export function createNote(input: NoteInput): Promise<Note> { return request<Note>('/notes', { method: 'POST', body: JSON.stringify(input) }) }
+export function updateNote(id: number, input: NoteInput): Promise<Note> { return request<Note>(`/notes/${id}`, { method: 'PATCH', body: JSON.stringify(input) }) }
+export function toggleNotePin(id: number): Promise<Note> { return request<Note>(`/notes/${id}/toggle-pin`, { method: 'POST' }) }
+export function deleteNote(id: number): Promise<void> { return request<void>(`/notes/${id}`, { method: 'DELETE' }) }

@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 
 .agents/
+.reference/
 graphify-out/
 
 # Local SQLite data

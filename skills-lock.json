@@ -97,6 +97,12 @@
       "skillPath": "skills/stitch-skill/SKILL.md",
       "computedHash": "c96b580192b34167efa01f460bbc669ff4315cf97f3cf6ff85ded8029aa720b8"
     },
+    "tiptap": {
+      "source": "ueberdosis/tiptap",
+      "sourceType": "github",
+      "skillPath": "skills/tiptap/SKILL.md",
+      "computedHash": "397fd0a77b53263bfebc02cd5b87608790ead9b58a575292549de8e82f7dd0bf"
+    },
     "ui-ux-pro-max": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",
       "sourceType": "github",

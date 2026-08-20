@@ -235,3 +235,42 @@
     clip-path: none;
   }
 }
+
+.ProseMirror {
+  min-height: 30rem;
+  outline: none;
+  color: var(--foreground);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.ProseMirror > * + * { margin-top: 1rem; }
+.ProseMirror h1, .ProseMirror h2, .ProseMirror h3 { font-weight: 600; line-height: 1.25; letter-spacing: -0.02em; }
+.ProseMirror h1 { font-size: 1.75rem; }
+.ProseMirror h2 { font-size: 1.35rem; }
+.ProseMirror h3 { font-size: 1.1rem; }
+.ProseMirror ul, .ProseMirror ol { padding-left: 1.5rem; }
+.ProseMirror ul { list-style: disc; }
+.ProseMirror ol { list-style: decimal; }
+.ProseMirror blockquote { border-left: 2px solid var(--border); color: var(--muted-foreground); padding-left: 1rem; }
+.ProseMirror code { border-radius: 0.25rem; background: var(--muted); padding: 0.15rem 0.3rem; font-size: 0.9em; }
+.ProseMirror pre { overflow-x: auto; border-radius: 0.5rem; background: var(--muted); padding: 1rem; }
+.ProseMirror pre code { background: transparent; padding: 0; }
+.ProseMirror a { color: var(--vault); text-decoration: underline; text-underline-offset: 3px; }
+.ProseMirror p.is-editor-empty:first-child::before { color: var(--muted-foreground); content: attr(data-placeholder); float: left; height: 0; pointer-events: none; }
+.ProseMirror mark { border-radius: 0.2rem; padding: 0.05rem 0.15rem; }
+.ProseMirror img.editor-image { display: block; max-width: 100%; height: auto; border-radius: 0.5rem; outline: 1px solid color-mix(in oklab, var(--foreground) 10%, transparent); }
+.ProseMirror img.ProseMirror-selectednode { outline: 2px solid var(--ring); outline-offset: 2px; }
+.ProseMirror .tableWrapper { margin: 1.25rem 0; overflow-x: auto; }
+.ProseMirror table { width: 100%; min-width: 32rem; border-collapse: collapse; table-layout: fixed; overflow: hidden; border-radius: 0.5rem; }
+.ProseMirror th, .ProseMirror td { min-width: 5rem; border: 1px solid var(--border); padding: 0.55rem 0.7rem; vertical-align: top; text-align: left; }
+.ProseMirror th { background: var(--muted); font-weight: 600; }
+.ProseMirror .selectedCell:after { position: absolute; z-index: 2; inset: 0; pointer-events: none; background: color-mix(in oklab, var(--ring) 16%, transparent); content: ''; }
+.ProseMirror .task-list { padding-left: 0; list-style: none; }
+.ProseMirror .task-list li { display: flex; align-items: flex-start; gap: 0.5rem; }
+.ProseMirror .task-list li > label { margin-top: 0.35rem; flex: 0 0 auto; user-select: none; }
+.ProseMirror .task-list li > label input { accent-color: var(--vault); }
+.ProseMirror .task-list li > div { min-width: 0; flex: 1; }
+.ProseMirror [style*="text-align: center"] { text-align: center; }
+.ProseMirror [style*="text-align: right"] { text-align: right; }
+.ProseMirror [style*="text-align: justify"] { text-align: justify; }

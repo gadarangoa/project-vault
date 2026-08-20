@@ -5,6 +5,7 @@ const tag = (row) => ({ id: row.id, projectId: row.project_id, name: row.name, c
 const secret = (row) => ({ id: row.id, projectId: row.project_id, name: row.name, type: row.type, key: row.key, value: row.value, username: row.username, email: row.email, password: row.password, notes: row.notes, createdAt: row.created_at, updatedAt: row.updated_at, tags: [] })
 const variable = (row) => ({ id: row.id, groupId: row.group_id, key: row.key, value: row.value, position: row.position })
 const variableGroup = (row, variables = []) => ({ id: row.id, projectId: row.project_id, name: row.name, description: row.description, createdAt: row.created_at, updatedAt: row.updated_at, variables })
+const note = (row) => ({ id: row.id, projectId: row.project_id, title: row.title, contentJson: JSON.parse(row.content_json), contentMarkdown: row.content_markdown, pinned: Boolean(row.pinned), createdAt: row.created_at, updatedAt: row.updated_at, tags: [] })
 
 const insertId = (result) => Number(result.lastInsertRowid)
 
@@ -135,6 +136,66 @@ export function duplicateVariableGroup(id) {
 
 export function deleteVariableGroup(id) {
   db.prepare('DELETE FROM variable_groups WHERE id = ?').run(id)
+}
+
+function attachNoteTags(projectId, notes) {
+  const tags = db.prepare('SELECT * FROM tags WHERE project_id = ? ORDER BY name').all(projectId).map(tag)
+  const links = db.prepare('SELECT nt.note_id, nt.tag_id FROM note_tags nt JOIN notes n ON n.id = nt.note_id WHERE n.project_id = ?').all(projectId)
+  const byId = new Map(tags.map((item) => [item.id, item]))
+  for (const item of notes) item.tags = links.filter((link) => link.note_id === item.id).map((link) => byId.get(link.tag_id)).filter(Boolean)
+  return notes
+}
+
+export function listNotes(projectId) {
+  const rows = db.prepare('SELECT * FROM notes WHERE project_id = ? ORDER BY pinned DESC, updated_at DESC, id DESC').all(projectId).map(note)
+  return attachNoteTags(projectId, rows)
+}
+
+export function getNote(id) {
+  const row = db.prepare('SELECT * FROM notes WHERE id = ?').get(id)
+  if (!row) return null
+  return attachNoteTags(row.project_id, [note(row)])[0]
+}
+
+function setNoteTags(noteId, tagIds) {
+  db.prepare('DELETE FROM note_tags WHERE note_id = ?').run(noteId)
+  const insert = db.prepare('INSERT INTO note_tags (note_id, tag_id) SELECT ?, id FROM tags WHERE id = ?')
+  for (const tagId of tagIds || []) insert.run(noteId, tagId)
+}
+
+function notePayload(input) {
+  const contentJson = typeof input.contentJson === 'string' ? JSON.parse(input.contentJson) : input.contentJson
+  return {
+    title: String(input.title || 'Sin título').trim() || 'Sin título',
+    contentJson: JSON.stringify(contentJson || { type: 'doc', content: [{ type: 'paragraph' }] }),
+    contentMarkdown: String(input.contentMarkdown || ''),
+    pinned: input.pinned ? 1 : 0,
+    tagIds: Array.isArray(input.tagIds) ? input.tagIds.map(Number).filter(Number.isInteger) : [],
+  }
+}
+
+export function createNote(input) {
+  const payload = notePayload(input)
+  const result = db.prepare('INSERT INTO notes (project_id, title, content_json, content_markdown, pinned) VALUES (?, ?, ?, ?, ?)').run(input.projectId, payload.title, payload.contentJson, payload.contentMarkdown, payload.pinned)
+  const id = insertId(result)
+  setNoteTags(id, payload.tagIds)
+  return getNote(id)
+}
+
+export function updateNote(id, input) {
+  const payload = notePayload(input)
+  db.prepare('UPDATE notes SET title = ?, content_json = ?, content_markdown = ?, pinned = ?, updated_at = datetime(\'now\') WHERE id = ?').run(payload.title, payload.contentJson, payload.contentMarkdown, payload.pinned, id)
+  setNoteTags(id, payload.tagIds)
+  return getNote(id)
+}
+
+export function toggleNotePin(id) {
+  db.prepare('UPDATE notes SET pinned = CASE pinned WHEN 1 THEN 0 ELSE 1 END, updated_at = datetime(\'now\') WHERE id = ?').run(id)
+  return getNote(id)
+}
+
+export function deleteNote(id) {
+  db.prepare('DELETE FROM notes WHERE id = ?').run(id)
 }
 
 function setSecretTags(secretId, tagIds) {

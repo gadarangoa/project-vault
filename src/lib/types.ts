@@ -1,3 +1,5 @@
+import type { JSONContent } from '@tiptap/core'
+
 export type SecretType = 'env' | 'credential'
 
 export type Project = {
@@ -72,4 +74,25 @@ export type VariableGroupInput = {
   name: string
   description: string
   variables: VariableGroupVariableInput[]
+}
+
+export type Note = {
+  id: number
+  projectId: number
+  title: string
+  contentJson: JSONContent
+  contentMarkdown: string
+  pinned: boolean
+  createdAt: string
+  updatedAt: string
+  tags: Tag[]
+}
+
+export type NoteInput = {
+  projectId: number
+  title: string
+  contentJson: Note['contentJson']
+  contentMarkdown: string
+  pinned: boolean
+  tagIds: number[]
 }

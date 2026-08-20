@@ -44,6 +44,8 @@ const server = createServer(async (request, response) => {
       if (request.method === 'GET') { result = repo.listTags(id); handled = true }
     } else if (parts[1] === 'projects' && parts[3] === 'variable-groups') {
       if (request.method === 'GET') { result = repo.listVariableGroups(id); handled = true }
+    } else if (parts[1] === 'projects' && parts[3] === 'notes') {
+      if (request.method === 'GET') { result = repo.listNotes(id); handled = true }
     } else if (parts[1] === 'projects' && parts.length === 3) {
       if (request.method === 'GET') { result = repo.getProject(id); handled = true }
       else if (request.method === 'PATCH') { repo.updateProject(id, payload); handled = true }
@@ -65,6 +67,13 @@ const server = createServer(async (request, response) => {
     } else if (parts[1] === 'variable-groups' && parts.length === 3) {
       if (request.method === 'PATCH') { repo.updateVariableGroup(id, payload); handled = true }
       else if (request.method === 'DELETE') { repo.deleteVariableGroup(id); handled = true }
+    } else if (parts[1] === 'notes' && parts.length === 2) {
+      if (request.method === 'POST') { result = repo.createNote(payload); handled = true }
+    } else if (parts[1] === 'notes' && parts.length === 3) {
+      if (request.method === 'PATCH') { result = repo.updateNote(id, payload); handled = true }
+      else if (request.method === 'DELETE') { repo.deleteNote(id); handled = true }
+    } else if (parts[1] === 'notes' && parts.length === 4 && parts[3] === 'toggle-pin') {
+      if (request.method === 'POST') { result = repo.toggleNotePin(id); handled = true }
     }
 
     if (!handled) return send(response, 404, { error: 'Ruta no encontrada' })
