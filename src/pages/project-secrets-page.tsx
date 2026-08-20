@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Braces, KeyRound, Plus, Search, X } from 'lucide-react'
+import { Braces, KeyRound, Plus } from 'lucide-react'
 import { useApp } from '@/context/AppContext'
 import { SecretCard } from '@/components/secret-card'
 import { SecretDialog } from '@/components/secret-dialog'
@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import { Input } from '@/components/ui/input'
+import { SearchField } from '@/components/search-field'
 import { cn } from '@/lib/utils'
 import type { Secret, SecretType } from '@/lib/types'
 
@@ -30,20 +30,21 @@ export function ProjectSecretsPage({ secretType }: { secretType: SecretType }) {
 
   return (
     <>
-      <div className="flex flex-col gap-5">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 pb-2">
         <div className="flex flex-col gap-1">
           <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
 
         <div className="flex flex-col gap-3">
-          <div className="relative">
-            <Search className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-muted-foreground" />
-            <Input className="pl-8" aria-label={`Buscar ${title.toLowerCase()}`} placeholder={`Buscar ${title.toLowerCase()}...`} value={search} onChange={(e) => setSearch(e.target.value)} />
-            {search && <button type="button" aria-label="Limpiar búsqueda" onClick={() => setSearch('')} className="absolute top-1/2 right-2.5 flex size-5 -translate-y-1/2 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"><X /></button>}
-          </div>
+          <SearchField
+            ariaLabel={`Buscar ${title.toLowerCase()}`}
+            placeholder={`Buscar ${title.toLowerCase()}...`}
+            value={search}
+            onValueChange={setSearch}
+          />
           {tags.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1.5 border-t pt-3">
               <button onClick={() => setTagFilter(null)} aria-pressed={tagFilter === null} className={cn('rounded-4xl border px-2 py-0.5 text-xs font-medium', tagFilter === null ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted')}>Todos</button>
               {tags.map((tag) => <button key={tag.id} onClick={() => setTagFilter(tagFilter === tag.name ? null : tag.name)} aria-pressed={tagFilter === tag.name}><TagBadge tag={tag} className={tagFilter === tag.name ? 'ring-2 ring-ring' : undefined} /></button>)}
               <Button variant="ghost" size="xs" className="text-muted-foreground" onClick={() => setManageTagsOpen(true)}>Gestionar tags</Button>
@@ -67,7 +68,7 @@ export function ProjectSecretsPage({ secretType }: { secretType: SecretType }) {
           </Empty>
         ) : (
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {visibleSecrets.map((secret, index) => <div key={secret.id} className="animate-rise-in" style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}><SecretCard secret={secret} onEdit={openEdit} onDelete={setDeleting} /></div>)}
+            {visibleSecrets.map((secret, index) => <div key={secret.id} className="animate-rise-in" style={{ animationDelay: `${Math.min(index, 8) * 75}ms` }}><SecretCard secret={secret} onEdit={openEdit} onDelete={setDeleting} /></div>)}
           </div>
         )}
       </div>

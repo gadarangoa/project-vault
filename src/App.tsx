@@ -189,10 +189,10 @@ function ProjectLayout() {
     );
   return (
     <div className="flex min-h-0 flex-1 flex-col animate-vault-open">
-      <header className="flex items-center justify-between gap-4 border-b bg-vault/5 px-6 py-3 dark:bg-vault/10">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-vault/10 ring-1 ring-vault/20">
-            <Folder size={20} className="text-vault" />
+      <header className="glass-panel flex items-center justify-between gap-3 border-b bg-vault/5 px-4 py-3 sm:gap-4 sm:px-6 dark:bg-vault/10">
+        <div className="flex min-w-0 items-center gap-3 h-9">
+          <div className="flex size-9 items-center justify-center rounded-xl bg-vault/12 ring-1 ring-vault/25 sm:size-10">
+            <Folder size={19} className="text-vault" />
           </div>
           <div className="min-w-0">
             <h1 className="truncate text-lg font-semibold leading-tight tracking-tight">
@@ -224,7 +224,7 @@ function ProjectLayout() {
                 <span className="sr-only">Acciones del proyecto</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
                 <Pencil data-icon="inline-start" /> Editar proyecto
               </DropdownMenuItem>
@@ -239,7 +239,7 @@ function ProjectLayout() {
           </DropdownMenu>
         </div>
       </header>
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-5">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-5 sm:px-6">
         <Outlet />
       </div>
       <ProjectSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
@@ -263,26 +263,52 @@ function NoProject() {
   );
 }
 
+function NotFound() {
+  return (
+    <Empty className="m-6 min-h-80">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <KeyRound />
+        </EmptyMedia>
+        <EmptyTitle>Página no encontrada</EmptyTitle>
+        <EmptyDescription>
+          La ruta que intentaste abrir no existe en esta bóveda.
+        </EmptyDescription>
+      </EmptyHeader>
+      <Button asChild>
+        <a href="/">Volver al inicio</a>
+      </Button>
+    </Empty>
+  );
+}
+
 function AppRoutes() {
   const { ready, error, retry } = useApp();
   if (!ready)
     return (
-      <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
+      <div className="flex min-h-[100dvh] items-center justify-center text-sm text-muted-foreground">
         Cargando base de datos local...
       </div>
     );
   if (error)
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 text-center">
+      <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-4 text-center">
         <KeyRound className="text-destructive" />
         <p className="text-sm text-muted-foreground">{error}</p>
         <Button onClick={() => void retry()}>Reintentar</Button>
       </div>
     );
   return (
-    <div className="flex h-screen flex-col overflow-hidden md:flex-row">
+    <>
+      <a
+      href="#main-content"
+      className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-primary focus:px-3 focus:py-2 focus:text-xs focus:font-semibold focus:text-primary-foreground"
+      >
+        Ir al contenido principal
+      </a>
+      <div className="flex h-[100dvh] min-h-0 flex-col overflow-hidden md:flex-row">
       <Sidebar />
-      <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <main id="main-content" className="flex min-h-0 flex-1 flex-col overflow-hidden" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<NoProject />} />
           <Route path="/projects/:projectId" element={<ProjectLayout />}>
@@ -302,10 +328,11 @@ function AppRoutes() {
             <Route path="notes" element={<ProjectNotesPage />} />
             <Route path="notes/:noteId" element={<ProjectNoteEditorPage />} />
           </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-    </div>
+      </div>
+    </>
   );
 }
 export default function App() {

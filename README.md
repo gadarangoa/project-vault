@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./public/readme-hero.svg" alt="Secret Vault — Administrador local de secretos y credenciales" width="100%" />
+  <img src="./public/readme-hero.svg" alt="Project Vault — Administrador local de secretos y credenciales" width="100%" />
 
   <p>
     <a href="#inicio-rápido"><img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Ready" /></a>

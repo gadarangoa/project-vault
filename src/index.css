@@ -5,26 +5,29 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --background: oklch(0.965 0.018 245);
+  --foreground: oklch(0.19 0.035 250);
+  --card: oklch(0.985 0.012 245 / 78%);
+  --card-foreground: oklch(0.19 0.035 250);
+  --popover: oklch(0.98 0.014 245 / 92%);
+  --popover-foreground: oklch(0.19 0.035 250);
+  --primary: oklch(0.52 0.16 205);
+  --primary-foreground: oklch(0.985 0.01 245);
+  --secondary: oklch(0.92 0.025 245);
+  --secondary-foreground: oklch(0.25 0.045 250);
+  --muted: oklch(0.92 0.025 245);
+  --muted-foreground: oklch(0.47 0.05 250);
+  --accent: oklch(0.91 0.035 265);
+  --accent-foreground: oklch(0.25 0.045 250);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --vault: oklch(0.47 0.11 255);
+  --border: oklch(0.72 0.055 240 / 34%);
+  --input: oklch(0.66 0.06 240 / 42%);
+  --ring: oklch(0.56 0.17 205);
+  --vault: var(--primary);
+  --ambient: oklch(0.62 0.18 285);
+  --credential: oklch(0.62 0.15 75);
+  --success: oklch(0.52 0.15 155);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -41,26 +44,29 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.269 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.371 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: oklch(0.13 0.035 255);
+  --foreground: oklch(0.94 0.025 225);
+  --card: oklch(0.19 0.045 255 / 72%);
+  --card-foreground: oklch(0.94 0.025 225);
+  --popover: oklch(0.20 0.05 255 / 94%);
+  --popover-foreground: oklch(0.94 0.025 225);
+  --primary: oklch(0.75 0.16 200);
+  --primary-foreground: oklch(0.14 0.04 255);
+  --secondary: oklch(0.23 0.05 255);
+  --secondary-foreground: oklch(0.94 0.025 225);
+  --muted: oklch(0.23 0.05 255);
+  --muted-foreground: oklch(0.72 0.045 235);
+  --accent: oklch(0.26 0.065 275);
+  --accent-foreground: oklch(0.94 0.025 225);
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.205 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --vault: oklch(0.68 0.11 255);
+  --border: oklch(0.78 0.08 230 / 18%);
+  --input: oklch(0.78 0.08 230 / 26%);
+  --ring: oklch(0.75 0.16 200);
+  --vault: var(--primary);
+  --ambient: oklch(0.62 0.18 285);
+  --credential: oklch(0.78 0.14 78);
+  --success: oklch(0.75 0.14 155);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -101,6 +107,9 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-vault: var(--vault);
+  --color-ambient: var(--ambient);
+  --color-credential: var(--credential);
+  --color-success: var(--success);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -133,6 +142,15 @@
     font-kerning: normal;
     text-rendering: optimizeLegibility;
     line-height: 1.5;
+    background-color: var(--background);
+    background-image:
+      radial-gradient(circle at 8% 0%, color-mix(in oklab, var(--vault) 16%, transparent), transparent 34%),
+      radial-gradient(circle at 92% 100%, color-mix(in oklab, var(--ambient) 13%, transparent), transparent 38%);
+    background-attachment: fixed;
+  }
+  button,
+  [role='button'] {
+    -webkit-tap-highlight-color: transparent;
   }
   code,
   kbd,
@@ -158,22 +176,52 @@
 @keyframes rise-in {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    filter: blur(5px);
+    transform: translateY(10px) scale(0.985);
   }
   to {
     opacity: 1;
+    filter: blur(0);
     transform: translateY(0);
+  }
+}
+
+.glass-panel {
+  background: color-mix(in oklab, var(--card) 78%, transparent);
+  border-color: color-mix(in oklab, var(--vault) 20%, var(--border));
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+}
+
+.futuristic-card {
+  box-shadow: 0 16px 38px -28px color-mix(in oklab, var(--vault) 42%, transparent);
+  transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1), border-color 360ms ease, box-shadow 360ms ease;
+}
+
+.futuristic-card:hover {
+  border-color: color-mix(in oklab, var(--vault) 45%, var(--border));
+  box-shadow: 0 20px 42px -24px color-mix(in oklab, var(--vault) 52%, transparent);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-panel {
+    background: var(--card);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }
 
 @keyframes vault-open {
   from {
     opacity: 0;
-    transform: translateX(8px);
+    filter: blur(8px);
+    transform: translateX(14px) scale(0.995);
     clip-path: inset(0 0 0 2%);
   }
   to {
     opacity: 1;
+    filter: blur(0);
     transform: translateX(0);
     clip-path: inset(0);
   }
@@ -203,19 +251,19 @@
 }
 
 .animate-rise-in {
-  animation: rise-in 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: rise-in 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-vault-open {
-  animation: vault-open 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: vault-open 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-swap-in {
-  animation: swap-in 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: swap-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-pop {
-  animation: pop 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: pop 280ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -225,12 +273,17 @@
   .animate-pop {
     animation: none;
   }
+  .futuristic-card {
+    transition: none;
+  }
   .animate-rise-in {
     opacity: 1;
+    filter: none;
     transform: none;
   }
   .animate-vault-open {
     opacity: 1;
+    filter: none;
     transform: none;
     clip-path: none;
   }

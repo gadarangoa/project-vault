@@ -43,7 +43,7 @@ function CopyButton({ text }: { text: string }) {
       title="Copiar"
       className="text-muted-foreground"
     >
-      {copied ? <Check className="animate-pop text-emerald-500" /> : <Copy />}
+      {copied ? <Check className="animate-pop text-success" /> : <Copy />}
     </Button>
   )
 }
@@ -79,14 +79,14 @@ function ValueRow({ icon, label, value, masked = false }: { icon: React.ReactNod
 
 export function SecretCard({ secret, onEdit, onDelete }: { secret: Secret; onEdit: (s: Secret) => void; onDelete: (s: Secret) => void }) {
   return (
-    <div className="flex flex-col gap-2.5 rounded-xl border bg-card p-3.5 transition-colors duration-150 hover:border-ring/50">
+    <div className="glass-panel futuristic-card flex flex-col gap-2.5 rounded-xl border bg-card p-3.5">
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
           <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
             {secret.type === 'env' ? (
               <Braces className="size-4 text-vault" />
             ) : (
-              <KeyRound className="size-4 text-amber-700 dark:text-amber-400" />
+              <KeyRound className="size-4 text-credential" />
             )}
           </span>
           <div className="min-w-0">

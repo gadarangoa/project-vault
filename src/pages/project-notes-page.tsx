@@ -99,6 +99,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
+import { SearchField } from "@/components/search-field";
 import {
   Tooltip,
   TooltipContent,
@@ -578,7 +579,7 @@ export function ProjectNotesPage() {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-5">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
         <div>
           <h2 className="text-lg font-semibold tracking-tight">Notas</h2>
@@ -592,11 +593,11 @@ export function ProjectNotesPage() {
         </Button>
       </div>
       <div className="flex flex-col gap-3">
-        <Input
-          aria-label="Buscar notas"
+        <SearchField
+          ariaLabel="Buscar notas"
           placeholder="Buscar notas..."
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onValueChange={setQuery}
         />
         {tags.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5">
@@ -656,8 +657,8 @@ export function ProjectNotesPage() {
           {visibleNotes.map((note, index) => (
             <article
               key={note.id}
-              className="animate-rise-in rounded-xl border bg-card p-4 transition-colors hover:bg-muted/20"
-              style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}
+              className="glass-panel futuristic-card animate-rise-in rounded-xl border bg-card p-4"
+              style={{ animationDelay: `${Math.min(index, 8) * 75}ms` }}
             >
               <div className="flex items-start justify-between gap-3">
                 <button
