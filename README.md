@@ -15,7 +15,7 @@
 
 ## El problema
 
-Las credenciales terminan repartidas entre notas, archivos `.env`, chats y gestores que requieren cuentas o servicios externos. Secret Vault propone una alternativa deliberadamente pequeña: una interfaz clara, una base SQLite local y un volumen Docker que permanece bajo tu control.
+Las credenciales terminan repartidas entre notas, archivos `.env`, chats y gestores que requieren cuentas o servicios externos. Project Vault propone una alternativa deliberadamente pequeña: una interfaz clara, una base SQLite local y un volumen Docker que permanece bajo tu control.
 
 > **Diseñado para uso local y privado.** Esta versión no publica datos, no necesita nube y no incluye autenticación ni cifrado en reposo todavía.
 
@@ -38,7 +38,7 @@ Las credenciales terminan repartidas entre notas, archivos `.env`, chats y gesto
 
 ## Por qué existe
 
-Secret Vault está pensado para una persona que necesita consultar sus credenciales con frecuencia, pero no quiere depender de una cuenta, una nube o un navegador específico.
+Project Vault está pensado para una persona que necesita consultar sus credenciales con frecuencia, pero no quiere depender de una cuenta, una nube o un navegador específico.
 
 - **Local por defecto:** los datos viven en tu instalación.
 - **Organizado por contexto:** los secretos pertenecen a proyectos, no a una lista plana.
@@ -184,7 +184,7 @@ npm run lint
 
 ## Estado del proyecto
 
-Secret Vault es una herramienta personal en evolución. El objetivo no es convertirse en un servicio público, sino ofrecer una bóveda local, clara y controlable para el trabajo diario.
+Project Vault es una herramienta personal en evolución. El objetivo no es convertirse en un servicio público, sino ofrecer una bóveda local, clara y controlable para el trabajo diario.
 
 <div align="center">
   <br />
