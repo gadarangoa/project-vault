@@ -825,13 +825,17 @@ export function ProjectNoteEditorPage() {
   const latestSave = useRef(0);
   const pendingSave = useRef<NoteInput | null>(null);
   const saveTimer = useRef<number | null>(null);
+  const initializedNoteId = useRef<number | null>(null);
+  const titleRef = useRef(title);
   const currentNote = useRef(note);
   currentNote.current = note;
 
   useEffect(() => {
-    if (note) {
+    if (note && initializedNoteId.current !== note.id) {
       setTitle(note.title);
+      titleRef.current = note.title;
       setTagIds(note.tags.map((tag) => tag.id));
+      initializedNoteId.current = note.id;
     }
   }, [note]);
 
@@ -910,7 +914,7 @@ export function ProjectNoteEditorPage() {
       if (!current) return;
       scheduleSave({
         projectId: current.projectId,
-        title,
+        title: titleRef.current,
         contentJson: instance.getJSON() as NoteInput["contentJson"],
         contentMarkdown: instance.getMarkdown(),
         pinned: current.pinned,
@@ -940,6 +944,7 @@ export function ProjectNoteEditorPage() {
     pinned = note.pinned,
   ) => {
     setTitle(nextTitle);
+    titleRef.current = nextTitle;
     setTagIds(nextTags);
     scheduleSave({
       projectId: note.projectId,

@@ -68,7 +68,7 @@ export function TagPicker({
               aria-pressed={selected.includes(tag.id)}
               onClick={() => toggle(tag.id)}
               className={cn(
-                'inline-flex items-center justify-center rounded-4xl border px-2 py-0.5 text-xs font-medium transition-all',
+                'inline-flex h-5 items-center justify-center rounded-4xl border px-2 py-0 text-xs font-medium leading-none transition-all',
                 selected.includes(tag.id)
                   ? colorClass(tag.color) + ' ring-2 ring-ring/50'
                   : 'border-input text-muted-foreground opacity-60 hover:opacity-100',

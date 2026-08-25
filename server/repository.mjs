@@ -166,7 +166,7 @@ function setNoteTags(noteId, tagIds) {
 function notePayload(input) {
   const contentJson = typeof input.contentJson === 'string' ? JSON.parse(input.contentJson) : input.contentJson
   return {
-    title: String(input.title || 'Sin título').trim() || 'Sin título',
+    title: String(input.title ?? '').trim(),
     contentJson: JSON.stringify(contentJson || { type: 'doc', content: [{ type: 'paragraph' }] }),
     contentMarkdown: String(input.contentMarkdown || ''),
     pinned: input.pinned ? 1 : 0,
