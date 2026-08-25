@@ -878,6 +878,7 @@ export function ProjectNoteEditorPage() {
         defaultLanguage: "plaintext",
         enableTabIndentation: true,
         tabSize: 2,
+        HTMLAttributes: { spellcheck: "false" },
       }),
       Link.configure({ openOnClick: false }),
       Underline,
