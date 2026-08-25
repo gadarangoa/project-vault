@@ -9,6 +9,7 @@ import {
 } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
 import Color from "@tiptap/extension-color";
@@ -26,6 +27,7 @@ import { TableKit } from "@tiptap/extension-table";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import { Markdown } from "@tiptap/markdown";
+import { common, createLowlight } from "lowlight";
 import {
   AlignCenter,
   AlignJustify,
@@ -115,6 +117,8 @@ const emptyDocument = {
   type: "doc" as const,
   content: [{ type: "paragraph" }],
 };
+
+const lowlight = createLowlight(common);
 
 function noteExcerpt(note: Note) {
   const text = note.contentMarkdown
@@ -348,6 +352,73 @@ function FontFamilyMenu({ editor }: { editor: ReturnType<typeof useEditor> }) {
             style={font.value ? { fontFamily: font.value } : undefined}
           >
             {font.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function CodeLanguageMenu({
+  editor,
+}: {
+  editor: ReturnType<typeof useEditor>;
+}) {
+  if (!editor) return null;
+  const languages = [
+    { label: "Automático", value: "" },
+    { label: "JavaScript", value: "javascript" },
+    { label: "TypeScript", value: "typescript" },
+    { label: "JSX", value: "jsx" },
+    { label: "TSX", value: "tsx" },
+    { label: "JSON", value: "json" },
+    { label: "HTML / XML", value: "xml" },
+    { label: "CSS", value: "css" },
+    { label: "Bash", value: "bash" },
+    { label: "Python", value: "python" },
+    { label: "SQL", value: "sql" },
+    { label: "Markdown", value: "markdown" },
+    { label: "Java", value: "java" },
+    { label: "Go", value: "go" },
+    { label: "Rust", value: "rust" },
+    { label: "YAML", value: "yaml" },
+  ];
+  const currentLanguage = editor.getAttributes("codeBlock").language || "";
+  const currentLabel =
+    languages.find((language) => language.value === currentLanguage)?.label ??
+    "Lenguaje";
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="gap-1 px-2"
+          title="Lenguaje del bloque de código"
+          disabled={!editor.isActive("codeBlock")}
+        >
+          <FileCode2 />
+          <span className="hidden lg:inline">{currentLabel}</span>
+          <ChevronDown />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="max-h-80 overflow-y-auto">
+        {languages.map((language) => (
+          <DropdownMenuItem
+            key={language.label}
+            onClick={() =>
+              editor
+                .chain()
+                .focus()
+                .updateAttributes("codeBlock", {
+                  language: language.value || null,
+                })
+                .run()
+            }
+          >
+            {language.label}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
@@ -797,7 +868,13 @@ export function ProjectNoteEditorPage() {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({ codeBlock: false }),
+      CodeBlockLowlight.configure({
+        lowlight,
+        defaultLanguage: "plaintext",
+        enableTabIndentation: true,
+        tabSize: 2,
+      }),
       Link.configure({ openOnClick: false }),
       Underline,
       TextStyle,
@@ -1044,7 +1121,7 @@ export function ProjectNoteEditorPage() {
       </div>
       <div className="border-b px-4 py-2 sm:px-6">
         <TooltipProvider delayDuration={300}>
-          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-0.5 overflow-x-auto">
+          <div className="flex w-full flex-wrap items-center gap-0.5 overflow-x-auto">
             <ToolbarButton
               label="Deshacer"
               disabled={!editor.can().undo()}
@@ -1059,9 +1136,10 @@ export function ProjectNoteEditorPage() {
             >
               <Redo2 />
             </ToolbarButton>
-            <ToolbarDivider />
-            <BlockMenu editor={editor} />
-            <FontFamilyMenu editor={editor} />
+          <ToolbarDivider />
+          <BlockMenu editor={editor} />
+          <CodeLanguageMenu editor={editor} />
+          <FontFamilyMenu editor={editor} />
             <ToolbarButton
               label="Línea horizontal"
               onClick={() => editor.chain().focus().setHorizontalRule().run()}
