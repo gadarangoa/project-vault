@@ -2,12 +2,20 @@
   "name": "secret-vault",
   "private": true,
   "version": "0.0.0",
+  "description": "Bóveda local para secretos y credenciales",
+  "author": "Secret Vault",
   "type": "module",
   "scripts": {
     "dev": "vite --port 5174",
     "dev:api": "node server/index.mjs",
     "start:api": "node server/index.mjs",
     "build": "tsc -b && vite build",
+    "desktop:dev": "concurrently -k -s first \"npm run dev\" \"wait-on http://127.0.0.1:5174 && electron .\"",
+    "desktop:build": "npm run build",
+    "desktop:dist": "npm run desktop:build && electron-builder",
+    "desktop:dist:win": "npm run desktop:build && electron-builder --win",
+    "desktop:dist:mac": "npm run desktop:build && electron-builder --mac",
+    "desktop:dist:linux": "npm run desktop:build && electron-builder --linux",
     "lint": "oxlint",
     "preview": "vite preview"
   },
@@ -55,8 +63,31 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
+    "concurrently": "^9.2.1",
+    "electron": "^40.0.0",
+    "electron-builder": "^26.0.12",
     "oxlint": "^1.75.0",
+    "wait-on": "^8.0.3",
     "typescript": "~6.0.2",
     "vite": "^8.2.0"
+  },
+  "main": "electron/main.mjs",
+  "build": {
+    "appId": "com.secretvault.app",
+    "productName": "Secret Vault",
+    "directories": { "output": "release" },
+    "files": ["dist/**/*", "electron/**/*", "server/**/*", "package.json", "!node_modules/**/*"],
+    "asar": true,
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "mac": { "target": ["dmg", "zip"] },
+    "linux": { "target": ["AppImage", "deb"], "category": "Utility" }
   }
 }
