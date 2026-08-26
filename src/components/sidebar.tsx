@@ -9,6 +9,8 @@ import {
   FileText,
   LockKeyhole,
   FolderLock,
+  ClipboardList,
+  Clock3,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
@@ -41,7 +43,7 @@ function NewProjectDialog() {
     setDescription("");
     setOpen(false);
     selectProject(project.id);
-    navigate(`/projects/${project.id}/secrets`);
+    navigate(`/projects/${project.id}`);
   };
 
   return (
@@ -95,6 +97,27 @@ function NewProjectDialog() {
 export function Sidebar() {
   const { projects, selectedProject, selectProject } = useApp();
   const navigate = useNavigate();
+  const projectSections = [
+    {
+      label: "Planificación",
+      items: [
+        { to: "tasks", label: "Tareas", icon: ClipboardList },
+        { to: "focus", label: "Enfoque", icon: Clock3 },
+      ],
+    },
+    {
+      label: "Seguridad",
+      items: [
+        { to: "credentials", label: "Credenciales", icon: KeyRound },
+        { to: "secrets", label: "Secretos", icon: Braces },
+        { to: "variable-groups", label: "Grupos de variables", icon: Layers3 },
+      ],
+    },
+    {
+      label: "Docs",
+      items: [{ to: "notes", label: "Notas", icon: FileText }],
+    },
+  ];
 
   return (
     <aside className="glass-panel flex w-full shrink-0 flex-col border-b bg-muted/30 md:h-full md:max-h-full md:w-64 md:overflow-hidden md:border-r md:border-b-0">
@@ -129,9 +152,8 @@ export function Sidebar() {
             <div key={project.id}>
               <button
                 onClick={() => {
-                  if (selectedProject?.id === project.id) return;
-                  selectProject(project.id);
-                  navigate(`/projects/${project.id}/secrets`);
+                  if (selectedProject?.id !== project.id) selectProject(project.id);
+                  navigate(`/projects/${project.id}`);
                 }}
                 className={cn(
                   "flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors",
@@ -148,36 +170,30 @@ export function Sidebar() {
                 <span className="truncate">{project.name}</span>
               </button>
               {selectedProject?.id === project.id && (
-                <div className="ml-4 flex flex-col gap-0.5 border-l pl-2">
-                  {[
-                    {
-                      to: "credentials",
-                      label: "Credenciales",
-                      icon: KeyRound,
-                    },
-                    { to: "secrets", label: "Secretos", icon: Braces },
-                    {
-                      to: "variable-groups",
-                      label: "Grupos de variables",
-                      icon: Layers3,
-                    },
-                    { to: "notes", label: "Notas", icon: FileText },
-                  ].map(({ to, label, icon: Icon }) => (
-                    <NavLink
-                      key={to}
-                      to={`/projects/${project.id}/${to}`}
-                      className={({ isActive }) =>
-                        cn(
-                          "flex items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors",
-                          isActive
-                            ? "bg-muted font-medium text-foreground"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                        )
-                      }
-                    >
-                      <Icon className="size-3 shrink-0" />
-                      {label}
-                    </NavLink>
+                <div className="ml-4 flex flex-col gap-3 border-l pl-2">
+                  {projectSections.map((section) => (
+                    <div key={section.label} className="flex flex-col gap-0.5">
+                      <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/70">
+                        {section.label}
+                      </p>
+                      {section.items.map(({ to, label, icon: Icon }) => (
+                        <NavLink
+                          key={to}
+                          to={`/projects/${project.id}/${to}`}
+                          className={({ isActive }) =>
+                            cn(
+                              "flex items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors",
+                              isActive
+                                ? "bg-muted font-medium text-foreground"
+                                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                            )
+                          }
+                        >
+                          <Icon className="size-3 shrink-0" />
+                          {label}
+                        </NavLink>
+                      ))}
+                    </div>
                   ))}
                 </div>
               )}

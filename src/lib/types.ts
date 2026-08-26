@@ -2,6 +2,10 @@ import type { JSONContent } from '@tiptap/core'
 
 export type SecretType = 'env' | 'credential'
 
+export type TaskStatus = 'backlog' | 'todo' | 'in_progress' | 'in_test' | 'completed'
+export type TaskPriority = 'low' | 'medium' | 'high'
+export type TaskType = 'task' | 'bug'
+
 export type Project = {
   id: number
   name: string
@@ -95,4 +99,73 @@ export type NoteInput = {
   contentMarkdown: string
   pinned: boolean
   tagIds: number[]
+}
+
+export type Task = {
+  id: number
+  projectId: number
+  title: string
+  description: string
+  type: TaskType
+  status: TaskStatus
+  priority: TaskPriority
+  createdAt: string
+  updatedAt: string
+  completedAt: string | null
+  tags: Tag[]
+  checklistItems: TaskChecklistItem[]
+}
+
+export type TaskInput = {
+  projectId: number
+  title: string
+  description: string
+  type: TaskType
+  status: TaskStatus
+  priority: TaskPriority
+  tagIds: number[]
+}
+
+export type TaskChecklistItem = {
+  id: number
+  taskId: number
+  title: string
+  completed: boolean
+  completedAt: string | null
+  position: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type TaskChecklistItemInput = {
+  taskId: number
+  title: string
+  completed?: boolean
+  position?: number
+}
+
+export type FocusSession = {
+  id: number
+  projectId: number
+  taskId: number
+  plannedSeconds: number
+  actualSeconds: number
+  startedAt: string
+  completedAt: string
+}
+
+export type FocusSessionInput = {
+  projectId: number
+  taskId: number
+  plannedSeconds: number
+  actualSeconds: number
+  startedAt: string
+  completedAt: string
+}
+
+export type FocusAchievement = {
+  id: number
+  projectId: number
+  achievementKey: string
+  unlockedAt: string
 }

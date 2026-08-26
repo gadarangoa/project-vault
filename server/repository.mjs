@@ -6,6 +6,10 @@ const secret = (row) => ({ id: row.id, projectId: row.project_id, name: row.name
 const variable = (row) => ({ id: row.id, groupId: row.group_id, key: row.key, value: row.value, position: row.position })
 const variableGroup = (row, variables = []) => ({ id: row.id, projectId: row.project_id, name: row.name, description: row.description, createdAt: row.created_at, updatedAt: row.updated_at, variables })
 const note = (row) => ({ id: row.id, projectId: row.project_id, title: row.title, contentJson: JSON.parse(row.content_json), contentMarkdown: row.content_markdown, pinned: Boolean(row.pinned), createdAt: row.created_at, updatedAt: row.updated_at, tags: [] })
+const checklistItem = (row) => ({ id: row.id, taskId: row.task_id, title: row.title, completed: Boolean(row.completed), completedAt: row.completed_at, position: row.position, createdAt: row.created_at, updatedAt: row.updated_at })
+const task = (row) => ({ id: row.id, projectId: row.project_id, title: row.title, description: row.description, type: row.type || 'task', status: row.status, priority: row.priority, createdAt: row.created_at, updatedAt: row.updated_at, completedAt: row.completed_at || null, tags: [], checklistItems: [] })
+const focusSession = (row) => ({ id: row.id, projectId: row.project_id, taskId: row.task_id, plannedSeconds: row.planned_seconds, actualSeconds: row.actual_seconds, startedAt: row.started_at, completedAt: row.completed_at })
+const achievement = (row) => ({ id: row.id, projectId: row.project_id, achievementKey: row.achievement_key, unlockedAt: row.unlocked_at })
 
 const insertId = (result) => Number(result.lastInsertRowid)
 
@@ -196,6 +200,132 @@ export function toggleNotePin(id) {
 
 export function deleteNote(id) {
   db.prepare('DELETE FROM notes WHERE id = ?').run(id)
+}
+
+function attachTaskTags(projectId, tasks) {
+  const tags = db.prepare('SELECT * FROM tags WHERE project_id = ? ORDER BY name').all(projectId).map(tag)
+  const links = db.prepare('SELECT tt.task_id, tt.tag_id FROM task_tags tt JOIN tasks t ON t.id = tt.task_id WHERE t.project_id = ?').all(projectId)
+  const byId = new Map(tags.map((item) => [item.id, item]))
+  for (const item of tasks) item.tags = links.filter((link) => link.task_id === item.id).map((link) => byId.get(link.tag_id)).filter(Boolean)
+  const checklist = db.prepare('SELECT * FROM task_checklist_items WHERE task_id IN (SELECT id FROM tasks WHERE project_id = ?) ORDER BY position, id').all(projectId).map(checklistItem)
+  for (const item of tasks) item.checklistItems = checklist.filter((check) => check.taskId === item.id)
+  return tasks
+}
+
+function getTask(id) {
+  const row = db.prepare('SELECT * FROM tasks WHERE id = ?').get(id)
+  return row ? attachTaskTags(row.project_id, [task(row)])[0] : null
+}
+
+function setTaskTags(taskId, tagIds) {
+  db.prepare('DELETE FROM task_tags WHERE task_id = ?').run(taskId)
+  const insert = db.prepare('INSERT INTO task_tags (task_id, tag_id) SELECT ?, id FROM tags WHERE id = ?')
+  for (const tagId of tagIds || []) insert.run(taskId, tagId)
+}
+
+function validTask(input) {
+  const type = String(input.type || 'task')
+  const status = String(input.status || 'backlog')
+  const priority = String(input.priority || 'medium')
+  if (!['task', 'bug'].includes(type)) throw new Error('Tipo de tarea inválido')
+  if (!['backlog', 'todo', 'in_progress', 'in_test', 'completed'].includes(status)) throw new Error('Estado de tarea inválido')
+  if (!['low', 'medium', 'high'].includes(priority)) throw new Error('Prioridad de tarea inválida')
+  const title = String(input.title || '').trim()
+  if (!title) throw new Error('El título de la tarea es obligatorio')
+  return { title, description: String(input.description || '').trim(), type, status, priority, tagIds: Array.isArray(input.tagIds) ? input.tagIds.map(Number).filter(Number.isInteger) : [] }
+}
+
+export function listTasks(projectId) {
+  const rows = db.prepare('SELECT * FROM tasks WHERE project_id = ? ORDER BY updated_at DESC, id DESC').all(projectId).map(task)
+  return attachTaskTags(projectId, rows)
+}
+
+export function createTask(input) {
+  const payload = validTask(input)
+  const completedAt = payload.status === 'completed' ? new Date().toISOString() : null
+  const result = db.prepare('INSERT INTO tasks (project_id, title, description, type, status, priority, completed_at) VALUES (?, ?, ?, ?, ?, ?, ?)').run(input.projectId, payload.title, payload.description, payload.type, payload.status, payload.priority, completedAt)
+  const id = insertId(result)
+  setTaskTags(id, payload.tagIds)
+  return getTask(id)
+}
+
+export function updateTask(id, input) {
+  const payload = validTask(input)
+  const current = db.prepare('SELECT project_id, status, completed_at FROM tasks WHERE id = ?').get(id)
+  const completedAt = payload.status === 'completed' ? (current?.status === 'completed' && current.completed_at ? current.completed_at : new Date().toISOString()) : null
+  db.prepare("UPDATE tasks SET title = ?, description = ?, type = ?, status = ?, priority = ?, completed_at = ?, updated_at = datetime('now') WHERE id = ?").run(payload.title, payload.description, payload.type, payload.status, payload.priority, completedAt, id)
+  setTaskTags(id, payload.tagIds)
+  return getTask(id)
+}
+
+export function deleteTask(id) {
+  db.prepare('DELETE FROM tasks WHERE id = ?').run(id)
+}
+
+export function listTaskChecklist(taskId) {
+  return db.prepare('SELECT * FROM task_checklist_items WHERE task_id = ? ORDER BY position, id').all(taskId).map(checklistItem)
+}
+
+function validChecklist(input) {
+  const title = String(input.title || '').trim()
+  if (!title) throw new Error('El texto del paso es obligatorio')
+  return { title, completed: Boolean(input.completed), position: Number.isInteger(Number(input.position)) ? Number(input.position) : 0 }
+}
+
+export function createTaskChecklistItem(input) {
+  const payload = validChecklist(input)
+  const taskRow = db.prepare('SELECT project_id FROM tasks WHERE id = ?').get(input.taskId)
+  if (!taskRow) throw new Error('La tarea no existe')
+  const result = db.prepare("INSERT INTO task_checklist_items (task_id, title, completed, completed_at, position) VALUES (?, ?, ?, ?, ?)").run(input.taskId, payload.title, payload.completed ? 1 : 0, payload.completed ? new Date().toISOString() : null, payload.position)
+  maybeUnlockAchievements(taskRow.project_id)
+  return checklistItem(db.prepare('SELECT * FROM task_checklist_items WHERE id = ?').get(insertId(result)))
+}
+
+export function updateTaskChecklistItem(id, input) {
+  const payload = validChecklist(input)
+  const current = db.prepare('SELECT * FROM task_checklist_items WHERE id = ?').get(id)
+  if (!current) throw new Error('El paso no existe')
+  const completedAt = payload.completed ? (current.completed && current.completed_at ? current.completed_at : new Date().toISOString()) : null
+  db.prepare("UPDATE task_checklist_items SET title = ?, completed = ?, completed_at = ?, position = ?, updated_at = datetime('now') WHERE id = ?").run(payload.title, payload.completed ? 1 : 0, completedAt, payload.position, id)
+  const updated = checklistItem(db.prepare('SELECT * FROM task_checklist_items WHERE id = ?').get(id))
+  maybeUnlockAchievements(db.prepare('SELECT project_id FROM tasks WHERE id = ?').get(updated.taskId).project_id)
+  return updated
+}
+
+export function deleteTaskChecklistItem(id) {
+  db.prepare('DELETE FROM task_checklist_items WHERE id = ?').run(id)
+}
+
+function maybeUnlockAchievements(projectId) {
+  const sessions = db.prepare('SELECT * FROM focus_sessions WHERE project_id = ? ORDER BY completed_at, id').all(projectId)
+  const completedSteps = db.prepare('SELECT COUNT(*) AS count FROM task_checklist_items i JOIN tasks t ON t.id = i.task_id WHERE t.project_id = ? AND i.completed = 1').get(projectId).count
+  const completedTasks = db.prepare("SELECT COUNT(*) AS count FROM tasks WHERE project_id = ? AND status = 'completed'").get(projectId).count
+  const days = new Set(sessions.map((item) => String(item.completed_at).slice(0, 10))).size
+  const rules = [
+    ['first_pomodoro', sessions.length >= 1], ['five_pomodoros', sessions.length >= 5], ['ten_checklist_items', completedSteps >= 10],
+    ['first_completed_task', completedTasks >= 1], ['three_completed_tasks', completedTasks >= 3], ['three_focus_days', days >= 3], ['ten_sessions', sessions.length >= 10],
+  ]
+  const insert = db.prepare('INSERT OR IGNORE INTO focus_achievements (project_id, achievement_key) VALUES (?, ?)')
+  for (const [key, unlocked] of rules) if (unlocked) insert.run(projectId, key)
+}
+
+export function listFocusSessions(projectId) {
+  return db.prepare('SELECT * FROM focus_sessions WHERE project_id = ? ORDER BY completed_at DESC, id DESC').all(projectId).map(focusSession)
+}
+
+export function createFocusSession(input) {
+  const taskRow = db.prepare('SELECT project_id FROM tasks WHERE id = ?').get(input.taskId)
+  if (!taskRow || taskRow.project_id !== Number(input.projectId)) throw new Error('La tarea no pertenece a este proyecto')
+  const planned = Number(input.plannedSeconds); const actual = Number(input.actualSeconds)
+  if (!Number.isInteger(planned) || planned <= 0 || !Number.isInteger(actual) || actual <= 0 || actual > planned) throw new Error('Duración de sesión inválida')
+  const result = db.prepare('INSERT INTO focus_sessions (project_id, task_id, planned_seconds, actual_seconds, started_at, completed_at) VALUES (?, ?, ?, ?, ?, ?)').run(input.projectId, input.taskId, planned, actual, input.startedAt, input.completedAt)
+  maybeUnlockAchievements(input.projectId)
+  return focusSession(db.prepare('SELECT * FROM focus_sessions WHERE id = ?').get(insertId(result)))
+}
+
+export function listFocusAchievements(projectId) {
+  maybeUnlockAchievements(projectId)
+  return db.prepare('SELECT * FROM focus_achievements WHERE project_id = ? ORDER BY unlocked_at, id').all(projectId).map(achievement)
 }
 
 function setSecretTags(secretId, tagIds) {

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   BrowserRouter,
-  Navigate,
   Outlet,
   Route,
   Routes,
@@ -21,7 +20,10 @@ import { useTheme } from "next-themes";
 import { useApp } from "@/context/AppContext";
 import { Sidebar } from "@/components/sidebar";
 import { ProjectPlaceholderPage } from "@/pages/project-placeholder-page";
+import { ProjectHomePage } from "@/pages/project-home-page";
 import { ProjectSecretsPage } from "@/pages/project-secrets-page";
+import { ProjectTasksPage } from "@/pages/project-tasks-page";
+import { ProjectFocusPage } from "@/pages/project-focus-page";
 import {
   ProjectNoteEditorPage,
   ProjectNotesPage,
@@ -312,7 +314,9 @@ function AppRoutes() {
         <Routes>
           <Route path="/" element={<NoProject />} />
           <Route path="/projects/:projectId" element={<ProjectLayout />}>
-            <Route index element={<Navigate to="secrets" replace />} />
+            <Route index element={<ProjectHomePage />} />
+            <Route path="tasks" element={<ProjectTasksPage />} />
+            <Route path="focus" element={<ProjectFocusPage />} />
             <Route
               path="secrets"
               element={<ProjectSecretsPage secretType="env" />}

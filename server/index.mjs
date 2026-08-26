@@ -71,6 +71,12 @@ async function handleApi(request, response, url) {
     if (request.method === 'GET') { result = repo.listVariableGroups(id); handled = true }
   } else if (parts[1] === 'projects' && parts[3] === 'notes') {
     if (request.method === 'GET') { result = repo.listNotes(id); handled = true }
+  } else if (parts[1] === 'projects' && parts[3] === 'tasks') {
+    if (request.method === 'GET') { result = repo.listTasks(id); handled = true }
+  } else if (parts[1] === 'projects' && parts[3] === 'focus-sessions') {
+    if (request.method === 'GET') { result = repo.listFocusSessions(id); handled = true }
+  } else if (parts[1] === 'projects' && parts[3] === 'achievements') {
+    if (request.method === 'GET') { result = repo.listFocusAchievements(id); handled = true }
   } else if (parts[1] === 'projects' && parts.length === 3) {
     if (request.method === 'GET') { result = repo.getProject(id); handled = true }
     else if (request.method === 'PATCH') { repo.updateProject(id, payload); handled = true }
@@ -99,6 +105,20 @@ async function handleApi(request, response, url) {
     else if (request.method === 'DELETE') { repo.deleteNote(id); handled = true }
   } else if (parts[1] === 'notes' && parts.length === 4 && parts[3] === 'toggle-pin') {
     if (request.method === 'POST') { result = repo.toggleNotePin(id); handled = true }
+  } else if (parts[1] === 'tasks' && parts.length === 2) {
+    if (request.method === 'POST') { result = repo.createTask(payload); handled = true }
+  } else if (parts[1] === 'tasks' && parts.length === 3) {
+    if (request.method === 'PATCH') { result = repo.updateTask(id, payload); handled = true }
+    else if (request.method === 'DELETE') { repo.deleteTask(id); handled = true }
+  } else if (parts[1] === 'tasks' && parts[3] === 'checklist') {
+    if (request.method === 'GET') { result = repo.listTaskChecklist(id); handled = true }
+  } else if (parts[1] === 'task-checklist-items' && parts.length === 2) {
+    if (request.method === 'POST') { result = repo.createTaskChecklistItem(payload); handled = true }
+  } else if (parts[1] === 'task-checklist-items' && parts.length === 3) {
+    if (request.method === 'PATCH') { result = repo.updateTaskChecklistItem(id, payload); handled = true }
+    else if (request.method === 'DELETE') { repo.deleteTaskChecklistItem(id); handled = true }
+  } else if (parts[1] === 'focus-sessions' && parts.length === 2) {
+    if (request.method === 'POST') { result = repo.createFocusSession(payload); handled = true }
   }
 
   if (!handled) return send(response, 404, { error: 'Ruta no encontrada' })
