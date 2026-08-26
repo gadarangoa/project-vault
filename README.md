@@ -138,6 +138,28 @@ La API local queda disponible en `http://127.0.0.1:3001` y Vite redirige automá
 
 En desarrollo, Vite redirige `/api` a `localhost:3001` y la base se crea en `data/secret-vault.sqlite`. Ese directorio está excluido de Git.
 
+## Aplicación de escritorio
+
+La aplicación también puede ejecutarse y empaquetarse con Electron. El modo escritorio de desarrollo conserva Vite para el frontend y levanta la API local automáticamente:
+
+```bash
+npm run desktop:dev
+```
+
+Para generar un instalador en la plataforma actual:
+
+```bash
+npm run desktop:dist
+```
+
+En Windows, el instalador NSIS se genera con:
+
+```bash
+npm run desktop:dist:win
+```
+
+La versión de escritorio guarda SQLite en la carpeta de datos de usuario de Electron, independiente del directorio de instalación. La base todavía no está cifrada en reposo.
+
 ## Operaciones disponibles
 
 La API local expone el CRUD necesario para la aplicación:
