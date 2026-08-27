@@ -16,7 +16,14 @@ type AppContextValue = {
   focusAchievements: FocusAchievement[]
   tagFilter: string | null
   search: string
+  pinnedProjectIds: number[]
+  recentProjectIds: number[]
+  archivedProjectIds: number[]
   selectProject: (id: number | null) => void
+  toggleProjectPinned: (id: number) => void
+  archiveProject: (id: number) => void
+  restoreProject: (id: number) => void
+  markProjectRecent: (id: number) => void
   setTagFilter: (name: string | null) => void
   setSearch: (q: string) => void
   retry: () => Promise<void>
@@ -50,6 +57,30 @@ type AppContextValue = {
 
 const AppContext = createContext<AppContextValue | null>(null)
 
+type ProjectNavigationPreferences = {
+  pinnedProjectIds: number[]
+  recentProjectIds: number[]
+  archivedProjectIds: number[]
+}
+
+const NAVIGATION_STORAGE_KEY = 'secret-vault-project-navigation'
+
+function readNavigationPreferences(): ProjectNavigationPreferences {
+  const fallback = { pinnedProjectIds: [], recentProjectIds: [], archivedProjectIds: [] }
+  try {
+    const raw = window.localStorage.getItem(NAVIGATION_STORAGE_KEY)
+    if (!raw) return fallback
+    const parsed = JSON.parse(raw) as Partial<ProjectNavigationPreferences>
+    return {
+      pinnedProjectIds: Array.isArray(parsed.pinnedProjectIds) ? parsed.pinnedProjectIds.filter(Number.isInteger) : [],
+      recentProjectIds: Array.isArray(parsed.recentProjectIds) ? parsed.recentProjectIds.filter(Number.isInteger).slice(0, 5) : [],
+      archivedProjectIds: Array.isArray(parsed.archivedProjectIds) ? parsed.archivedProjectIds.filter(Number.isInteger) : [],
+    }
+  } catch {
+    return fallback
+  }
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -64,6 +95,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [focusAchievements, setFocusAchievements] = useState<FocusAchievement[]>([])
   const [tagFilter, setTagFilter] = useState<string | null>(null)
   const [search, setSearch] = useState('')
+  const [navigationPreferences, setNavigationPreferences] = useState(readNavigationPreferences)
+
+  const updateNavigationPreferences = useCallback((update: (current: ProjectNavigationPreferences) => ProjectNavigationPreferences) => {
+    setNavigationPreferences((current) => {
+      const next = update(current)
+      window.localStorage.setItem(NAVIGATION_STORAGE_KEY, JSON.stringify(next))
+      return next
+    })
+  }, [])
 
   const loadProjects = useCallback(async () => {
     setError(null)
@@ -105,6 +145,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [],
   )
 
+  const markProjectRecent = useCallback((id: number) => {
+    updateNavigationPreferences((current) => ({
+      ...current,
+      recentProjectIds: [id, ...current.recentProjectIds.filter((projectId) => projectId !== id)].slice(0, 5),
+    }))
+  }, [updateNavigationPreferences])
+
+  const toggleProjectPinned = useCallback((id: number) => {
+    updateNavigationPreferences((current) => ({
+      ...current,
+      pinnedProjectIds: current.pinnedProjectIds.includes(id)
+        ? current.pinnedProjectIds.filter((projectId) => projectId !== id)
+        : [...current.pinnedProjectIds, id],
+    }))
+  }, [updateNavigationPreferences])
+
+  const archiveProject = useCallback((id: number) => {
+    updateNavigationPreferences((current) => ({
+      ...current,
+      archivedProjectIds: [...new Set([...current.archivedProjectIds, id])],
+    }))
+  }, [updateNavigationPreferences])
+
+  const restoreProject = useCallback((id: number) => {
+    updateNavigationPreferences((current) => ({
+      ...current,
+      archivedProjectIds: current.archivedProjectIds.filter((projectId) => projectId !== id),
+    }))
+  }, [updateNavigationPreferences])
+
   const selectedProject = useMemo(
     () => projects.find((p) => p.id === selectedId) ?? null,
     [projects, selectedId],
@@ -141,6 +211,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const deleteProject = useCallback(async (id: number) => {
     await repo.deleteProject(id)
     setProjects((prev) => prev.filter((p) => p.id !== id))
+    updateNavigationPreferences((current) => ({
+      pinnedProjectIds: current.pinnedProjectIds.filter((projectId) => projectId !== id),
+      recentProjectIds: current.recentProjectIds.filter((projectId) => projectId !== id),
+      archivedProjectIds: current.archivedProjectIds.filter((projectId) => projectId !== id),
+    }))
     if (selectedId === id) {
       setSelectedId(null)
       setSecrets([])
@@ -151,7 +226,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setFocusSessions([])
       setFocusAchievements([])
     }
-  }, [selectedId])
+  }, [selectedId, updateNavigationPreferences])
 
   const createSecret = useCallback(async (input: SecretInput) => {
     const secret = await repo.createSecret(input)
@@ -305,7 +380,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     focusAchievements,
     tagFilter,
     search,
+    pinnedProjectIds: navigationPreferences.pinnedProjectIds,
+    recentProjectIds: navigationPreferences.recentProjectIds,
+    archivedProjectIds: navigationPreferences.archivedProjectIds,
     selectProject,
+    toggleProjectPinned,
+    archiveProject,
+    restoreProject,
+    markProjectRecent,
     setTagFilter,
     setSearch,
     retry: loadProjects,

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Braces, KeyRound, Plus } from 'lucide-react'
 import { useApp } from '@/context/AppContext'
 import { SecretCard } from '@/components/secret-card'
@@ -19,6 +19,7 @@ export function ProjectSecretsPage({ secretType }: { secretType: SecretType }) {
   const [editing, setEditing] = useState<Secret | null>(null)
   const [deleting, setDeleting] = useState<Secret | null>(null)
   const [manageTagsOpen, setManageTagsOpen] = useState(false)
+  useEffect(() => { const openNew = (event: Event) => { const type = (event as CustomEvent<string>).detail; if (type === secretType) { setEditing(null); setDialogOpen(true) } }; window.addEventListener('secret-vault:new-secret', openNew); return () => window.removeEventListener('secret-vault:new-secret', openNew) }, [secretType])
   const visibleSecrets = secrets.filter((secret) => secret.type === secretType)
   const isFiltered = Boolean(search.trim() || tagFilter)
   const title = secretType === 'env' ? 'Secretos' : 'Credenciales'

@@ -636,7 +636,7 @@ export function ProjectNotesPage() {
     });
   }, [notes, query, tagFilter]);
 
-  const create = async () => {
+  const create = useCallback(async () => {
     if (!projectId) return;
     const note = await createNote({
       projectId: Number(projectId),
@@ -647,7 +647,8 @@ export function ProjectNotesPage() {
       tagIds: [],
     });
     navigate(`/projects/${projectId}/notes/${note.id}`);
-  };
+  }, [createNote, navigate, projectId]);
+  useEffect(() => { const openNew = () => { void create(); }; window.addEventListener("secret-vault:new-note", openNew); return () => window.removeEventListener("secret-vault:new-note", openNew); }, [create]);
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-5">

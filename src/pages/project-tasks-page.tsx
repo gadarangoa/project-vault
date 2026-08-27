@@ -1,4 +1,4 @@
-import { useMemo, useState, type DragEvent } from "react";
+import { useEffect, useMemo, useState, type DragEvent } from "react";
 import { Bug, Check, CircleAlert, ClipboardList, Clock3, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
@@ -56,6 +56,7 @@ export function ProjectTasksPage() {
   const navigate = useNavigate();
   const { tasks, selectedProject, updateTask, deleteTask } = useApp();
   const [dialogOpen, setDialogOpen] = useState(false); const [editing, setEditing] = useState<Task | null>(null); const [deleting, setDeleting] = useState<Task | null>(null); const [draggedId, setDraggedId] = useState<number | null>(null); const [dragOver, setDragOver] = useState<TaskStatus | null>(null); const [movingId, setMovingId] = useState<number | null>(null);
+  useEffect(() => { const openNew = () => { setEditing(null); setDialogOpen(true); }; window.addEventListener("secret-vault:new-task", openNew); return () => window.removeEventListener("secret-vault:new-task", openNew); }, []);
   const grouped = useMemo(() => new Map(COLUMNS.map((column) => [column.status, tasks.filter((task) => task.status === column.status)])), [tasks]);
   const moveTask = async (task: Task, status: TaskStatus) => { if (task.status === status || movingId === task.id) return; setMovingId(task.id); try { await updateTask(task.id, { projectId: task.projectId, title: task.title, description: task.description, type: task.type, status, priority: task.priority, tagIds: task.tags.map((tag) => tag.id) }); } finally { setMovingId(null); } };
   const handleDrop = async (event: DragEvent<HTMLDivElement>, status: TaskStatus) => { event.preventDefault(); const id = Number(event.dataTransfer.getData("text/task-id")); const task = tasks.find((item) => item.id === id); setDraggedId(null); setDragOver(null); if (task) await moveTask(task, status); };

@@ -19,6 +19,9 @@ import {
 import { useTheme } from "next-themes";
 import { useApp } from "@/context/AppContext";
 import { Sidebar } from "@/components/sidebar";
+import { CommandPalette } from "@/components/command-palette";
+import { ProjectsPage } from "@/pages/projects-page";
+import { HomeDashboardPage } from "@/pages/home-dashboard-page";
 import { ProjectPlaceholderPage } from "@/pages/project-placeholder-page";
 import { ProjectHomePage } from "@/pages/project-home-page";
 import { ProjectSecretsPage } from "@/pages/project-secrets-page";
@@ -167,9 +170,10 @@ function ProjectSettings({
 function ProjectLayout() {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  const { ready, selectedProject, projects, selectProject } = useApp();
+  const { ready, selectedProject, projects, selectProject, deleteProject, markProjectRecent } = useApp();
   const { resolvedTheme, setTheme } = useTheme();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const id = Number(projectId);
   useEffect(() => {
     if (
@@ -177,12 +181,18 @@ function ProjectLayout() {
       projects.some((project) => project.id === id) &&
       selectedProject?.id !== id
     )
+      markProjectRecent(id);
       void selectProject(id);
-  }, [ready, projects, id, selectedProject, selectProject]);
+  }, [ready, projects, id, selectedProject, selectProject, markProjectRecent]);
   useEffect(() => {
     if (ready && !projects.some((project) => project.id === id))
       navigate("/", { replace: true });
   }, [ready, projects, id, navigate]);
+  useEffect(() => {
+    const openSettings = () => setSettingsOpen(true);
+    window.addEventListener("secret-vault:edit-project", openSettings);
+    return () => window.removeEventListener("secret-vault:edit-project", openSettings);
+  }, []);
   if (!ready || !selectedProject)
     return (
       <div className="flex min-h-full items-center justify-center text-sm text-muted-foreground">
@@ -190,7 +200,7 @@ function ProjectLayout() {
       </div>
     );
   return (
-    <div className="flex min-h-0 flex-1 flex-col animate-vault-open">
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col animate-vault-open">
       <header className="glass-panel flex items-center justify-between gap-3 border-b bg-vault/5 px-4 py-3 sm:gap-4 sm:px-6 dark:bg-vault/10">
         <div className="flex min-w-0 items-center gap-3 h-9">
           <div className="flex size-9 items-center justify-center rounded-xl bg-vault/12 ring-1 ring-vault/25 sm:size-10">
@@ -226,42 +236,24 @@ function ProjectLayout() {
                 <span className="sr-only">Acciones del proyecto</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuContent side="bottom" align="end" sideOffset={6} className="w-40">
               <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
                 <Pencil data-icon="inline-start" /> Editar proyecto
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => setSettingsOpen(true)}
-              >
+              <DropdownMenuItem variant="destructive" onClick={() => setDeleteOpen(true)}>
                 <Trash2 data-icon="inline-start" /> Eliminar proyecto
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </header>
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-5 sm:px-6">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto px-4 py-5 sm:px-6">
         <Outlet />
       </div>
       <ProjectSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>¿Eliminar este proyecto?</AlertDialogTitle><AlertDialogDescription>Se eliminarán todos los elementos de «{selectedProject.name}». Esta acción no se puede deshacer.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction variant="destructive" onClick={async () => { await deleteProject(selectedProject.id); setDeleteOpen(false); selectProject(null); navigate("/"); }}>Eliminar</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
     </div>
-  );
-}
-
-function NoProject() {
-  return (
-    <Empty className="m-6 min-h-[28rem]">
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <Folder />
-        </EmptyMedia>
-        <EmptyTitle>Selecciona un proyecto</EmptyTitle>
-        <EmptyDescription>
-          Elige un proyecto del menú lateral para ver sus categorías.
-        </EmptyDescription>
-      </EmptyHeader>
-    </Empty>
   );
 }
 
@@ -310,9 +302,11 @@ function AppRoutes() {
       </a>
       <div className="flex h-[100dvh] min-h-0 flex-col overflow-hidden md:flex-row">
       <Sidebar />
-      <main id="main-content" className="flex min-h-0 flex-1 flex-col overflow-hidden" tabIndex={-1}>
+      <CommandPalette />
+      <main id="main-content" className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden" tabIndex={-1}>
         <Routes>
-          <Route path="/" element={<NoProject />} />
+          <Route path="/" element={<HomeDashboardPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:projectId" element={<ProjectLayout />}>
             <Route index element={<ProjectHomePage />} />
             <Route path="tasks" element={<ProjectTasksPage />} />

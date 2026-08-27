@@ -62,12 +62,8 @@ export function ProjectHomePage() {
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 pb-8 animate-vault-open">
       <section className="grid gap-6 border-b border-border/70 pb-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-end">
         <div className="max-w-2xl">
-          <div className="mb-4 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.16em] text-vault">
-            <span className="size-1.5 rounded-full bg-vault" />
-            Espacio de proyecto
-          </div>
           <h2 className="max-w-xl text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
-            Todo lo que tu equipo necesita para construir con contexto.
+            Todo lo que necesitas para administrar tu proyecto.
           </h2>
           <p className="mt-4 max-w-xl text-sm leading-7 text-muted-foreground">
             Centraliza accesos, configuración y documentación de {selectedProject.name} en un solo lugar.
@@ -142,7 +138,7 @@ export function ProjectHomePage() {
             </div>
             <h3 className="text-lg font-semibold tracking-tight">Docs</h3>
             <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-              Decisiones, guías y contexto para que el equipo avance alineado.
+                Decisiones, guías y contexto para que avances con claridad.
             </p>
           </div>
           <div className="mt-auto border-t border-border/70 pt-4">

@@ -93,6 +93,7 @@ function VariableGroupsPage() {
   const [editing, setEditing] = useState<VariableGroup | null>(null)
   const [deleting, setDeleting] = useState<VariableGroup | null>(null)
   const [copiedId, setCopiedId] = useState<number | null>(null)
+  useEffect(() => { const openNew = () => { setEditing(null); setEditorOpen(true) }; window.addEventListener('secret-vault:new-variable-group', openNew); return () => window.removeEventListener('secret-vault:new-variable-group', openNew) }, [])
   const openNew = () => { setEditing(null); setEditorOpen(true) }
   const openEdit = (group: VariableGroup) => { setEditing(group); setEditorOpen(true) }
   const copyGroup = async (group: VariableGroup) => { await navigator.clipboard.writeText(exportContent(group)); setCopiedId(group.id); window.setTimeout(() => setCopiedId((current) => current === group.id ? null : current), 1800) }
