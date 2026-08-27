@@ -81,7 +81,7 @@ export function ProjectHomePage() {
 
       <section className="glass-panel futuristic-card rounded-xl border bg-card p-5 shadow-none sm:p-6">
         <div className="mb-5 flex items-start gap-3">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-vault/12 text-vault"><ClipboardList className="size-5" /></div>
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-vault/15 text-vault ring-1 ring-vault/20"><ClipboardList className="size-5" /></div>
           <div><h3 className="text-lg font-semibold tracking-tight">Planificación</h3><p className="mt-1 text-sm leading-relaxed text-muted-foreground">Organiza el trabajo y conviértelo en sesiones de foco concretas.</p></div>
         </div>
         <div>
@@ -93,14 +93,16 @@ export function ProjectHomePage() {
       <section className="grid gap-4 lg:grid-cols-[1.45fr_0.85fr]">
         <div className="glass-panel futuristic-card rounded-xl border bg-card p-5 shadow-none sm:p-6">
           <div className="mb-6 flex items-start justify-between gap-4">
-            <div>
-              <div className="mb-3 flex size-10 items-center justify-center rounded-xl bg-vault/12 text-vault">
+            <div className="flex min-w-0 items-start gap-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-vault/15 text-vault ring-1 ring-vault/20">
                 <ShieldCheck className="size-5" />
               </div>
-              <h3 className="text-lg font-semibold tracking-tight">Seguridad</h3>
-              <p className="mt-1 max-w-md text-sm leading-relaxed text-muted-foreground">
-                Protege los accesos y la configuración sensible que mantiene tu proyecto en marcha.
-              </p>
+              <div className="min-w-0">
+                <h3 className="text-lg font-semibold tracking-tight">Seguridad</h3>
+                <p className="mt-1 max-w-md text-sm leading-relaxed text-muted-foreground">
+                  Protege los accesos y la configuración sensible que mantiene tu proyecto en marcha.
+                </p>
+              </div>
             </div>
             <span className="rounded-full bg-muted px-2.5 py-1 font-mono text-xs text-muted-foreground">
               {securityTotal} elementos
@@ -132,14 +134,16 @@ export function ProjectHomePage() {
         </div>
 
         <div className="glass-panel futuristic-card flex flex-col rounded-xl border bg-card p-5 shadow-none sm:p-6">
-          <div className="mb-6">
-            <div className="mb-3 flex size-10 items-center justify-center rounded-xl bg-muted text-foreground">
+          <div className="mb-6 flex items-start gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-vault/15 text-vault ring-1 ring-vault/20">
               <FileText className="size-5" />
             </div>
-            <h3 className="text-lg font-semibold tracking-tight">Docs</h3>
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+            <div className="min-w-0">
+              <h3 className="text-lg font-semibold tracking-tight">Docs</h3>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                 Decisiones, guías y contexto para que avances con claridad.
-            </p>
+              </p>
+            </div>
           </div>
           <div className="mt-auto border-t border-border/70 pt-4">
             <FeatureLink

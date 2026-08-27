@@ -6,21 +6,17 @@ import {
   FolderPlus,
   KeyRound,
   ListTodo,
-  Moon,
   Pin,
   Plus,
   ShieldCheck,
-  Sun,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "next-themes";
 import { useApp } from "@/context/AppContext";
 import { Button } from "@/components/ui/button";
 
 export function HomeDashboardPage() {
   const { projects, pinnedProjectIds, recentProjectIds } = useApp();
   const navigate = useNavigate();
-  const { resolvedTheme, setTheme } = useTheme();
   const activeProjects = projects;
   const recentProjects = useMemo(
     () =>
@@ -60,18 +56,6 @@ export function HomeDashboardPage() {
               Tu centro de control personal
             </p>
           </div>
-        </div>
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() =>
-              setTheme(resolvedTheme === "dark" ? "light" : "dark")
-            }
-            aria-label="Cambiar tema"
-          >
-            {resolvedTheme === "dark" ? <Sun /> : <Moon />}
-          </Button>
         </div>
       </header>
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-6">

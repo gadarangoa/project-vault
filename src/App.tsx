@@ -11,17 +11,15 @@ import {
   Folder,
   KeyRound,
   MoreHorizontal,
-  Moon,
   Pencil,
-  Sun,
   Trash2,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useApp } from "@/context/AppContext";
 import { Sidebar } from "@/components/sidebar";
 import { CommandPalette } from "@/components/command-palette";
 import { ProjectsPage } from "@/pages/projects-page";
 import { HomeDashboardPage } from "@/pages/home-dashboard-page";
+import { SettingsPage } from "@/pages/settings-page";
 import { ProjectPlaceholderPage } from "@/pages/project-placeholder-page";
 import { ProjectHomePage } from "@/pages/project-home-page";
 import { ProjectSecretsPage } from "@/pages/project-secrets-page";
@@ -171,7 +169,6 @@ function ProjectLayout() {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const { ready, selectedProject, projects, selectProject, deleteProject, markProjectRecent } = useApp();
-  const { resolvedTheme, setTheme } = useTheme();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const id = Number(projectId);
@@ -218,17 +215,6 @@ function ProjectLayout() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() =>
-              setTheme(resolvedTheme === "dark" ? "light" : "dark")
-            }
-            title="Cambiar tema"
-          >
-            {resolvedTheme === "dark" ? <Sun /> : <Moon />}
-            <span className="sr-only">Cambiar tema</span>
-          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon-sm">
@@ -307,6 +293,7 @@ function AppRoutes() {
         <Routes>
           <Route path="/" element={<HomeDashboardPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/configuracion" element={<SettingsPage />} />
           <Route path="/projects/:projectId" element={<ProjectLayout />}>
             <Route index element={<ProjectHomePage />} />
             <Route path="tasks" element={<ProjectTasksPage />} />

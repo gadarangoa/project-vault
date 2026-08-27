@@ -3,14 +3,14 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { AppProvider } from '@/context/AppContext'
-import { ThemeProvider } from '@/components/theme-provider'
+import { AppearanceProvider } from '@/components/appearance-provider'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AppProvider>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <AppearanceProvider>
         <App />
-      </ThemeProvider>
+      </AppearanceProvider>
     </AppProvider>
   </StrictMode>,
 )

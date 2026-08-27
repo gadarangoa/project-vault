@@ -14,6 +14,7 @@ import {
   MoreHorizontal,
   Pin,
   SearchIcon,
+  Settings,
   X,
 } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -376,6 +377,15 @@ export function Sidebar() {
             </NavLink>
           )}
         </div>
+      </div>
+      <div className="mx-3 mb-2">
+        <NavLink
+          to="/configuracion"
+          onClick={() => setMobileOpen(false)}
+          className={linkClass}
+        >
+          <Settings className="size-4" /> Configuración
+        </NavLink>
       </div>
       <div className="mx-3 mb-3 rounded-xl border border-vault/20 bg-vault/5 p-3 dark:bg-vault/10">
         <p className="text-xs font-semibold text-foreground">Bóveda local</p>
