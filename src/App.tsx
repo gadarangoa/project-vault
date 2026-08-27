@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import {
   BrowserRouter,
+  NavLink,
   Outlet,
   Route,
   Routes,
+  useLocation,
   useNavigate,
   useParams,
 } from "react-router-dom";
 import {
+  ArrowLeft,
   Folder,
   KeyRound,
   MoreHorizontal,
@@ -58,6 +61,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsList } from "@/components/ui/tabs";
 import {
   Empty,
   EmptyDescription,
@@ -168,6 +172,7 @@ function ProjectSettings({
 function ProjectLayout() {
   const { projectId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { ready, selectedProject, projects, selectProject, deleteProject, markProjectRecent } = useApp();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -234,11 +239,114 @@ function ProjectLayout() {
           </DropdownMenu>
         </div>
       </header>
+      <ProjectContextNavigation
+        projectId={selectedProject.id}
+        pathname={location.pathname}
+        onBack={() => navigate(`/projects/${selectedProject.id}`)}
+      />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto px-4 py-5 sm:px-6">
         <Outlet />
       </div>
       <ProjectSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>¿Eliminar este proyecto?</AlertDialogTitle><AlertDialogDescription>Se eliminarán todos los elementos de «{selectedProject.name}». Esta acción no se puede deshacer.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction variant="destructive" onClick={async () => { await deleteProject(selectedProject.id); setDeleteOpen(false); selectProject(null); navigate("/"); }}>Eliminar</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
+    </div>
+  );
+}
+
+type ProjectNavigationItem = {
+  label: string;
+  path: string;
+};
+
+const projectNavigationSections: Array<{
+  matches: (pathname: string, projectId: number) => boolean;
+  items: ProjectNavigationItem[];
+}> = [
+  {
+    matches: (pathname, projectId) =>
+      ["credentials", "secrets", "variable-groups"].some((feature) =>
+        pathname === `/projects/${projectId}/${feature}`,
+      ),
+    items: [
+      { label: "Credenciales", path: "credentials" },
+      { label: "Secretos", path: "secrets" },
+      { label: "Grupos de variables", path: "variable-groups" },
+    ],
+  },
+  {
+    matches: (pathname, projectId) =>
+      pathname === `/projects/${projectId}/notes`,
+    items: [{ label: "Notas", path: "notes" }],
+  },
+  {
+    matches: (pathname, projectId) =>
+      ["tasks", "focus"].some(
+        (feature) => pathname === `/projects/${projectId}/${feature}`,
+      ),
+    items: [
+      { label: "Tareas", path: "tasks" },
+      { label: "Enfoque", path: "focus" },
+    ],
+  },
+];
+
+function ProjectContextNavigation({
+  projectId,
+  pathname,
+  onBack,
+}: {
+  projectId: number;
+  pathname: string;
+  onBack: () => void;
+}) {
+  const section = projectNavigationSections.find(({ matches }) =>
+    matches(pathname, projectId),
+  );
+  if (!section) return null;
+
+  const activePath = pathname.split("/").at(-1) ?? "";
+
+  return (
+    <div className="border-b bg-background/80 px-4 py-2 backdrop-blur-sm sm:px-6">
+      <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="shrink-0 gap-1.5 text-muted-foreground hover:text-foreground"
+          onClick={onBack}
+        >
+          <ArrowLeft data-icon="inline-start" />
+          <span className="hidden sm:inline">Volver al proyecto</span>
+          <span className="sr-only sm:hidden">Volver al proyecto</span>
+        </Button>
+        <div className="h-5 w-px shrink-0 bg-border" aria-hidden="true" />
+        <div className="min-w-0 flex-1 overflow-x-auto overflow-y-hidden">
+          <Tabs value={activePath} className="w-max min-w-full">
+            <TabsList className="w-max min-w-full justify-start">
+              {section.items.map((item) => {
+                const path = `/projects/${projectId}/${item.path}`;
+                return (
+                  <NavLink
+                    key={item.path}
+                    to={path}
+                    role="tab"
+                    aria-selected={activePath === item.path}
+                    className={({ isActive }) =>
+                      `relative inline-flex h-[calc(100%-1px)] flex-none items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-0.5 text-sm font-medium whitespace-nowrap transition-colors focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring ${
+                        isActive
+                          ? "bg-background text-foreground shadow-sm"
+                          : "text-foreground/60 hover:text-foreground"
+                      }`
+                    }
+                  >
+                    {item.label}
+                  </NavLink>
+                );
+              })}
+            </TabsList>
+          </Tabs>
+        </div>
+      </div>
     </div>
   );
 }

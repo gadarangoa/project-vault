@@ -66,7 +66,7 @@ export function HomeDashboardPage() {
                 Espacio personal
               </p>
               <h2 className="max-w-2xl text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
-                Tu contexto, listo para continuar.
+                ¿Listo para continuar?.
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-7 text-muted-foreground">
                 Accede rápidamente a tus proyectos y vuelve al trabajo sin
