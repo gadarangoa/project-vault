@@ -54,9 +54,9 @@ import {
   ListOrdered,
   Merge,
   Minus,
-  MoreVertical,
   Paintbrush,
   PanelLeft,
+  PanelRight,
   PanelTop,
   Pin,
   PinOff,
@@ -102,6 +102,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { SearchField } from "@/components/search-field";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import {
   Tooltip,
   TooltipContent,
@@ -211,18 +216,55 @@ function ToolbarDivider() {
   );
 }
 
+function MarkdownPreview({
+  markdown,
+  scrollRef,
+  onScroll,
+}: {
+  markdown: string;
+  scrollRef: React.RefObject<HTMLDivElement | null>;
+  onScroll: () => void;
+}) {
+  return (
+    <aside className="markdown-preview-panel">
+      <div className="markdown-preview-heading">
+        <div>
+          <p className="markdown-preview-kicker">Documento</p>
+          <h3>Vista previa Markdown</h3>
+        </div>
+        <span className="markdown-preview-status">Sincronizada</span>
+      </div>
+      <div
+        ref={scrollRef}
+        className="markdown-preview-scroll"
+        onScroll={onScroll}
+      >
+        {markdown ? (
+          <pre className="markdown-preview-content">{markdown}</pre>
+        ) : (
+          <p className="markdown-preview-empty">
+            La vista previa aparecerá cuando escribas contenido.
+          </p>
+        )}
+      </div>
+    </aside>
+  );
+}
+
 function ToolbarButton({
   label,
   active,
   disabled,
   onClick,
   children,
+  className,
 }: {
   label: string;
   active?: boolean;
   disabled?: boolean;
   onClick: () => void;
   children: ReactNode;
+  className?: string;
 }) {
   return (
     <Tooltip>
@@ -235,7 +277,7 @@ function ToolbarButton({
           aria-label={label}
           aria-pressed={active}
           disabled={disabled}
-          className={active ? "bg-muted text-foreground" : undefined}
+          className={cn(active ? "bg-muted text-foreground" : undefined, className)}
           onClick={onClick}
         >
           {children}
@@ -822,10 +864,14 @@ export function ProjectNoteEditorPage() {
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [deleting, setDeleting] = useState(false);
   const [, setEditorVersion] = useState(0);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [imageError, setImageError] = useState("");
   const latestSave = useRef(0);
   const pendingSave = useRef<NoteInput | null>(null);
   const saveTimer = useRef<number | null>(null);
+  const editorScrollRef = useRef<HTMLDivElement | null>(null);
+  const previewScrollRef = useRef<HTMLDivElement | null>(null);
+  const syncingScroll = useRef(false);
   const initializedNoteId = useRef<number | null>(null);
   const titleRef = useRef(title);
   const currentNote = useRef(note);
@@ -964,6 +1010,28 @@ export function ProjectNoteEditorPage() {
     await navigator.clipboard.writeText(editor.getMarkdown());
     setSaveState("saved");
   };
+  const markdown = editor.getMarkdown();
+  const syncScroll = (source: HTMLElement, target: HTMLElement | null) => {
+    if (!target || syncingScroll.current) return;
+    const sourceMax = source.scrollHeight - source.clientHeight;
+    const targetMax = target.scrollHeight - target.clientHeight;
+    if (sourceMax <= 0 || targetMax <= 0) return;
+    syncingScroll.current = true;
+    target.scrollTop = (source.scrollTop / sourceMax) * targetMax;
+    window.requestAnimationFrame(() => {
+      syncingScroll.current = false;
+    });
+  };
+  const handleEditorScroll = () => {
+    if (editorScrollRef.current) {
+      syncScroll(editorScrollRef.current, previewScrollRef.current);
+    }
+  };
+  const handlePreviewScroll = () => {
+    if (previewScrollRef.current) {
+      syncScroll(previewScrollRef.current, editorScrollRef.current);
+    }
+  };
   const insertImage = () => {
     const url = window.prompt("URL de la imagen");
     if (!url?.trim()) return;
@@ -1023,6 +1091,30 @@ export function ProjectNoteEditorPage() {
     navigate(`/projects/${projectId}/notes`);
   };
 
+  const editorSurface = (
+    <div
+      ref={editorScrollRef}
+      onScroll={handleEditorScroll}
+      className="h-full min-h-0 overflow-y-auto px-4 py-10 sm:px-6"
+    >
+      <div className="mx-auto w-full max-w-6xl" onPaste={handlePaste}>
+        {imageError && (
+          <p
+            role="alert"
+            className="mb-3 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          >
+            {imageError}
+          </p>
+        )}
+        <EditorContent editor={editor} />
+        <div className="mt-6 flex justify-end text-xs text-muted-foreground">
+          {editor.storage.characterCount.words()} palabras ·{" "}
+          {editor.storage.characterCount.characters()} caracteres
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="-mx-6 -my-5 flex min-h-full flex-col bg-background">
       <div className="flex min-h-14 items-center gap-2 border-b px-4 py-2 sm:px-6">
@@ -1065,7 +1157,8 @@ export function ProjectNoteEditorPage() {
             </div>
           </>
         )}
-        <div className="ml-auto flex items-center gap-1">
+        <TooltipProvider delayDuration={300}>
+          <div className="ml-auto flex items-center gap-1">
           <span className="mr-2 hidden items-center gap-1.5 text-xs text-muted-foreground sm:flex">
             {saveState === "saving" ? (
               "Guardando..."
@@ -1090,52 +1183,43 @@ export function ProjectNoteEditorPage() {
             selected={tagIds}
             onChange={(next) => updateMetadata(title, next)}
           />
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            title={note.pinned ? "Desfijar nota" : "Fijar nota"}
+          <ToolbarButton
+            label={note.pinned ? "Desfijar nota" : "Fijar nota"}
+            active={note.pinned}
             onClick={() => updateMetadata(title, tagIds, !note.pinned)}
           >
             {note.pinned ? <PinOff /> : <Pin />}
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                title="Acciones de la nota"
-              >
-                <MoreVertical />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem onClick={exportCurrent}>
-                <Download data-icon="inline-start" /> Exportar .md
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => void copyMarkdown()}>
-                <CopyIcon data-icon="inline-start" /> Copiar Markdown
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => setDeleting(true)}
-              >
-                <Trash2 data-icon="inline-start" /> Eliminar nota
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+          </ToolbarButton>
+          <ToolbarButton label="Exportar .md" onClick={exportCurrent}>
+            <Download />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Copiar Markdown"
+            onClick={() => void copyMarkdown()}
+          >
+            <CopyIcon />
+          </ToolbarButton>
+          <ToolbarButton
+            label="Eliminar nota"
+            className="text-destructive hover:text-destructive"
+            onClick={() => setDeleting(true)}
+          >
+            <Trash2 />
+          </ToolbarButton>
+          </div>
+        </TooltipProvider>
       </div>
       <div className="border-b px-4 py-2 sm:px-6">
         <TooltipProvider delayDuration={300}>
-          <div className="flex w-full flex-wrap items-center gap-0.5 overflow-x-auto">
-            <ToolbarButton
-              label="Deshacer"
-              disabled={!editor.can().undo()}
-              onClick={() => editor.chain().focus().undo().run()}
-            >
-              <Undo2 />
-            </ToolbarButton>
+          <div className="flex w-full items-center gap-2">
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-0.5 overflow-x-auto">
+              <ToolbarButton
+                label="Deshacer"
+                disabled={!editor.can().undo()}
+                onClick={() => editor.chain().focus().undo().run()}
+              >
+                <Undo2 />
+              </ToolbarButton>
             <ToolbarButton
               label="Rehacer"
               disabled={!editor.can().redo()}
@@ -1333,25 +1417,40 @@ export function ProjectNoteEditorPage() {
             >
               <WandSparkles />
             </ToolbarButton>
+            </div>
+            <div className="shrink-0 border-l pl-2">
+              <ToolbarButton
+                label="Vista previa Markdown"
+                active={previewOpen}
+                onClick={() => setPreviewOpen((value) => !value)}
+              >
+                <PanelRight />
+              </ToolbarButton>
+            </div>
           </div>
         </TooltipProvider>
       </div>
-      <main className="min-h-0 flex-1 overflow-y-auto px-4 py-10 sm:px-6">
-        <div className="mx-auto w-full max-w-6xl" onPaste={handlePaste}>
-          {imageError && (
-            <p
-              role="alert"
-              className="mb-3 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive"
-            >
-              {imageError}
-            </p>
-          )}
-          <EditorContent editor={editor} />
-          <div className="mt-6 flex justify-end text-xs text-muted-foreground">
-            {editor.storage.characterCount.words()} palabras ·{" "}
-            {editor.storage.characterCount.characters()} caracteres
-          </div>
-        </div>
+      <main className="min-h-0 flex-1 overflow-hidden">
+        {previewOpen ? (
+          <ResizablePanelGroup
+            orientation="horizontal"
+            className="h-full w-full"
+          >
+            <ResizablePanel defaultSize="58" minSize="35" className="min-w-0">
+              {editorSurface}
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize="42" minSize="25" className="min-w-0">
+              <MarkdownPreview
+                markdown={markdown}
+                scrollRef={previewScrollRef}
+                onScroll={handlePreviewScroll}
+              />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        ) : (
+          editorSurface
+        )}
       </main>
       <AlertDialog open={deleting} onOpenChange={setDeleting}>
         <AlertDialogContent>

@@ -1,0 +1,100 @@
+- generic [ref=f2e2]:
+  - link "Ir al contenido principal" [ref=f2e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f2e5]:
+    - complementary [ref=f2e6]:
+      - generic [ref=f2e14]:
+        - generic [ref=f2e15]: Project Vault
+        - generic [ref=f2e16]: Administrador de secretos
+      - generic [ref=f2e17]:
+        - button "Nuevo proyecto" [ref=f2e18]
+        - navigation "Navegación global" [ref=f2e19]:
+          - link "Inicio" [ref=f2e20] [cursor=pointer]:
+            - /url: /
+          - link "Todos los proyectos" [ref=f2e23] [cursor=pointer]:
+            - /url: /projects
+          - button "Buscar ⌘ K" [ref=f2e26]:
+            - text: Buscar
+            - generic [ref=f2e30]: ⌘ K
+        - generic [ref=f2e31]:
+          - paragraph [ref=f2e32]: Proyectos recientes (5)
+          - generic [ref=f2e33]:
+            - generic [ref=f2e34]:
+              - button "E-Commerce" [ref=f2e35]
+              - button "Acciones de E-Commerce" [ref=f2e40]
+            - generic [ref=f2e41]:
+              - button "Página Web" [ref=f2e42]
+              - button "Acciones de Página Web" [ref=f2e47]
+            - generic [ref=f2e48]:
+              - button "Proyecto seis" [ref=f2e49]
+              - button "Acciones de Proyecto seis" [ref=f2e54]
+            - generic [ref=f2e55]:
+              - button "CX Insights" [ref=f2e56]
+              - button "Acciones de CX Insights" [ref=f2e61]
+            - generic [ref=f2e62]:
+              - button "Prueba 2" [ref=f2e63]
+              - button "Acciones de Prueba 2" [ref=f2e68]
+      - link "Configuración" [ref=f2e70] [cursor=pointer]:
+        - /url: /configuracion
+      - generic [ref=f2e74]:
+        - paragraph [ref=f2e75]: Bóveda local
+        - paragraph [ref=f2e76]: Tus datos viven solo en este navegador.
+    - main [ref=f2e77]:
+      - generic [ref=f2e78]:
+        - generic [ref=f2e79]:
+          - heading "E-Commerce" [level=1] [ref=f2e85]
+          - button "Acciones del proyecto" [ref=f2e87]
+        - generic [ref=f2e90]:
+          - generic [ref=f2e91]:
+            - button [ref=f2e92]
+            - textbox "Título de la nota" [ref=f2e93]:
+              - /placeholder: Sin título
+              - text: Sin título
+            - generic [ref=f2e94]: Editada 27 ago 2026, 17:41
+            - generic [ref=f2e95]:
+              - generic [ref=f2e96]: Guardado
+              - button "Etiquetas" [ref=f2e97]
+              - button "Fijar nota" [ref=f2e98]
+              - button "Exportar .md" [ref=f2e99]
+              - button "Copiar Markdown" [ref=f2e100]
+              - button "Eliminar nota" [ref=f2e101]
+          - generic [ref=f2e103]:
+            - generic [ref=f2e104]:
+              - button "Deshacer" [disabled]
+              - button "Rehacer" [disabled]
+              - button "Tipo de bloque" [ref=f2e106]:
+                - generic [ref=f2e107]: Párrafo
+              - button "Acciones de tabla" [disabled]
+              - button "Automático" [disabled]
+              - button "Familia tipográfica" [ref=f2e108]:
+                - generic [ref=f2e109]: Fuente
+              - button "Línea horizontal" [ref=f2e110]
+              - button "Negrita" [ref=f2e112]
+              - button "Cursiva" [ref=f2e113]
+              - button "Subrayado" [ref=f2e114]
+              - button "Tachado" [ref=f2e115]
+              - button "Bloque de código" [ref=f2e116]
+              - button "Código inline" [ref=f2e117]
+              - button "Superíndice" [ref=f2e118]
+              - button "Subíndice" [ref=f2e119]
+              - button "Color de texto" [ref=f2e120]
+              - button "Resaltado" [ref=f2e121]
+              - button "Lista con viñetas" [ref=f2e123]
+              - button "Lista numerada" [ref=f2e124]
+              - button "Lista de tareas" [ref=f2e125]
+              - button "Cita" [ref=f2e126]
+              - button "Insertar tabla" [ref=f2e128]
+              - button "Insertar enlace" [ref=f2e129]
+              - button "Quitar enlace" [disabled]
+              - button "Insertar imagen" [ref=f2e130]
+              - button "Alinear a la izquierda" [ref=f2e132]
+              - button "Centrar" [ref=f2e133]
+              - button "Alinear a la derecha" [ref=f2e134]
+              - button "Justificar" [ref=f2e135]
+              - button "Limpiar formato" [ref=f2e137]
+            - button "Vista previa Markdown" [ref=f2e139]
+          - main [ref=f2e140]:
+            - generic [ref=f2e142]:
+              - textbox [ref=f2e144]:
+                - paragraph [ref=f2e145]: Empieza a escribir la documentación de este proyecto...
+              - generic [ref=f2e146]: 0 palabras · 0 caracteres

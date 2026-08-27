@@ -1,0 +1,119 @@
+- generic [ref=e2]:
+  - link "Ir al contenido principal" [ref=e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e13]:
+        - generic [ref=e14]: Project Vault
+        - generic [ref=e15]: Administrador de secretos
+      - generic [ref=e16]:
+        - button "Nuevo proyecto" [ref=e17]
+        - navigation "Navegación global" [ref=e18]:
+          - link "Inicio" [ref=e19] [cursor=pointer]:
+            - /url: /
+          - link "Todos los proyectos" [active] [ref=e22] [cursor=pointer]:
+            - /url: /projects
+          - button "Buscar ⌘ K" [ref=e25]:
+            - text: Buscar
+            - generic [ref=e29]: ⌘ K
+        - generic [ref=e30]:
+          - paragraph [ref=e31]: Proyectos recientes (5)
+          - generic [ref=e32]:
+            - generic [ref=e33]:
+              - button "E-Commerce" [ref=e34]
+              - button "Acciones de E-Commerce" [ref=e39]
+            - generic [ref=e40]:
+              - button "Página Web" [ref=e41]
+              - button "Acciones de Página Web" [ref=e46]
+            - generic [ref=e47]:
+              - button "Proyecto seis" [ref=e48]
+              - button "Acciones de Proyecto seis" [ref=e53]
+            - generic [ref=e54]:
+              - button "CX Insights" [ref=e55]
+              - button "Acciones de CX Insights" [ref=e60]
+            - generic [ref=e61]:
+              - button "Prueba 2" [ref=e62]
+              - button "Acciones de Prueba 2" [ref=e67]
+      - link "Configuración" [ref=e69] [cursor=pointer]:
+        - /url: /configuracion
+      - generic [ref=e73]:
+        - paragraph [ref=e74]: Bóveda local
+        - paragraph [ref=e75]: Tus datos viven solo en este navegador.
+    - main [ref=e76]:
+      - generic [ref=e128]:
+        - generic [ref=e134]:
+          - heading "Todos los proyectos" [level=1] [ref=e135]
+          - paragraph [ref=e136]: Tu espacio de trabajo personal
+        - generic [ref=e138]:
+          - generic [ref=e139]:
+            - paragraph [ref=e140]: Navegación global
+            - heading "Encuentra tu próximo contexto" [level=2] [ref=e141]
+            - paragraph [ref=e142]: Encuentra rápidamente un espacio de trabajo y continúa donde lo dejaste.
+          - generic [ref=e143]:
+            - textbox "Buscar proyectos" [ref=e145]
+            - tablist "Filtrar proyectos" [ref=e146]:
+              - tab "Todos" [selected] [ref=e147]
+              - tab "Recientes" [ref=e148]
+              - tab "Fijados" [ref=e149]
+              - tab "Archivados" [ref=e150]
+          - generic [ref=e151]:
+            - article [ref=e152]:
+              - generic [ref=e153]:
+                - button "E-Commerce Sin descripción" [ref=e154]:
+                  - generic [ref=e158]:
+                    - generic [ref=e159]: E-Commerce
+                    - generic [ref=e160]: Sin descripción
+                - button "Fijar E-Commerce" [ref=e161]
+              - generic [ref=e162]:
+                - generic [ref=e163]: Actualizado 27/8/2026
+                - generic [ref=e164]: Abrir para continuar
+            - article [ref=e167]:
+              - generic [ref=e168]:
+                - button "Página Web Sin descripción" [ref=e169]:
+                  - generic [ref=e173]:
+                    - generic [ref=e174]: Página Web
+                    - generic [ref=e175]: Sin descripción
+                - button "Fijar Página Web" [ref=e176]
+              - generic [ref=e177]:
+                - generic [ref=e178]: Actualizado 27/8/2026
+                - generic [ref=e179]: Abrir para continuar
+            - article [ref=e182]:
+              - generic [ref=e183]:
+                - button "Proyecto seis Sin descripción" [ref=e184]:
+                  - generic [ref=e188]:
+                    - generic [ref=e189]: Proyecto seis
+                    - generic [ref=e190]: Sin descripción
+                - button "Fijar Proyecto seis" [ref=e191]
+              - generic [ref=e192]:
+                - generic [ref=e193]: Actualizado 27/8/2026
+                - generic [ref=e194]: Abrir para continuar
+            - article [ref=e197]:
+              - generic [ref=e198]:
+                - button "CX Insights Sin descripción" [ref=e199]:
+                  - generic [ref=e203]:
+                    - generic [ref=e204]: CX Insights
+                    - generic [ref=e205]: Sin descripción
+                - button "Fijar CX Insights" [ref=e206]
+              - generic [ref=e207]:
+                - generic [ref=e208]: Actualizado 27/8/2026
+                - generic [ref=e209]: Abrir para continuar
+            - article [ref=e212]:
+              - generic [ref=e213]:
+                - button "Prueba 2 Sin descripción" [ref=e214]:
+                  - generic [ref=e218]:
+                    - generic [ref=e219]: Prueba 2
+                    - generic [ref=e220]: Sin descripción
+                - button "Fijar Prueba 2" [ref=e221]
+              - generic [ref=e222]:
+                - generic [ref=e223]: Actualizado 27/8/2026
+                - generic [ref=e224]: Abrir para continuar
+            - article [ref=e227]:
+              - generic [ref=e228]:
+                - button "Proyecto de prueba Prueba" [ref=e229]:
+                  - generic [ref=e233]:
+                    - generic [ref=e234]: Proyecto de prueba
+                    - generic [ref=e235]: Prueba
+                - button "Fijar Proyecto de prueba" [ref=e236]
+              - generic [ref=e237]:
+                - generic [ref=e238]: Actualizado 19/8/2026
+                - generic [ref=e239]: Abrir para continuar

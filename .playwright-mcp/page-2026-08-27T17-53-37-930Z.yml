@@ -1,0 +1,67 @@
+- generic [ref=e2]:
+  - link "Ir al contenido principal" [ref=e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e4]:
+    - complementary [ref=e5]:
+      - generic [ref=e13]:
+        - generic [ref=e14]: Project Vault
+        - generic [ref=e15]: Administrador de secretos
+      - generic [ref=e16]:
+        - button "Nuevo proyecto" [ref=e17]
+        - navigation "Navegación global" [ref=e18]:
+          - link "Inicio" [ref=e19] [cursor=pointer]:
+            - /url: /
+          - link "Todos los proyectos" [ref=e22] [cursor=pointer]:
+            - /url: /projects
+          - button "Buscar ⌘ K" [ref=e25]:
+            - text: Buscar
+            - generic [ref=e29]: ⌘ K
+        - generic [ref=e30]:
+          - paragraph [ref=e31]: Proyectos recientes (5)
+          - generic [ref=e32]:
+            - generic [ref=e33]:
+              - button "E-Commerce" [ref=e34]
+              - button "Acciones de E-Commerce" [ref=e39]
+            - generic [ref=e40]:
+              - button "Página Web" [ref=e41]
+              - button "Acciones de Página Web" [ref=e46]
+            - generic [ref=e47]:
+              - button "Proyecto seis" [ref=e48]
+              - button "Acciones de Proyecto seis" [ref=e53]
+            - generic [ref=e54]:
+              - button "CX Insights" [ref=e55]
+              - button "Acciones de CX Insights" [ref=e60]
+            - generic [ref=e61]:
+              - button "Prueba 2" [ref=e62]
+              - button "Acciones de Prueba 2" [ref=e67]
+      - link "Configuración" [ref=e69] [cursor=pointer]:
+        - /url: /configuracion
+      - generic [ref=e73]:
+        - paragraph [ref=e74]: Bóveda local
+        - paragraph [ref=e75]: Tus datos viven solo en este navegador.
+    - main [ref=e76]:
+      - generic [ref=e244]:
+        - generic [ref=e245]:
+          - heading "E-Commerce" [level=1] [ref=e251]
+          - button "Acciones del proyecto" [ref=e253]
+        - generic [ref=e384]:
+          - button "Volver al proyecto" [ref=e385]
+          - tablist [ref=e390]:
+            - tab "Notas" [selected] [ref=e391] [cursor=pointer]
+        - generic [ref=e392]:
+          - generic [ref=e393]:
+            - generic [ref=e394]:
+              - heading "Notas" [level=2] [ref=e395]
+              - paragraph [ref=e396]: Ideas, decisiones y documentación de este proyecto.
+            - button "Nueva nota" [ref=e397]
+          - textbox "Buscar notas" [ref=e400]:
+            - /placeholder: Buscar notas...
+          - article [ref=e402]:
+            - generic [ref=e403]:
+              - button [ref=e404]:
+                - heading "Sin título" [level=3] [ref=e405]
+                - paragraph [ref=e406]: "Getting Started Speckit After install Speckit initialize into your project plaintext specify init . integration codex use your AI Coding agent of your preference: Supported AI Coding Agent Integrations | Spec Kit Documentation https://github.github.io/spec kit/reference/integrations.html then use the following basic commands: /speckit.constitution : Create or update project governing principles and development guidelines Alternative : Openspec follow the instructions here &gt; Fission AI/OpenSpec: Spec driven development SDD for AI coding assistants. https://github.com/Fission AI/OpenSpec/ Graphify\\ \\ \\ \\ After install, in your code assitant use: plaintext /graphify . graphify install project platform codex Alternative : you can use Graft instead, follow instructions here &gt; NanoNets/Graft: Turbocharge Claude Code, Cursor, Codex, Gemini &amp; every coding agent: faster, cheaper, with contextual understanding specific to your codebase. https://github.com/nanonets/graft quick start Agent Skills Add agents skills for your project. General skills plaintext npx autoskills npx skills add https://github.com/vercel labs/skills skill find skills npx skills add https://github.com/anthropics/skills skill skill creator npx skills add https://github.com/obra/superpowers skill brainstorming npx skills add upstash/context7 Frontend Skills plaintext Design npx skills add Leonxlnx/taste skill npx impeccable install pnpm dlx skills add shadcn/ui npx skills add vercel/ai elements npx skills add vercel/ai npx skills add https://github.com/nextlevelbuilder/ui ux pro max skill skill ui ux pro max npx skills add https://github.com/anthropics/skills skill frontend design React npx skills add https://github.com/vercel labs/agent skills skill vercel composition patterns npx skills add https://github.com/vercel labs/agent skills skill web design guidelines Backend skills plaintext npx skills add https://github.com/affaan m/ecc skill backend patterns npx skills add https://github.com/wshobson/agents skill fastapi templates npx skills add https://github.com/affaan m/ecc skill fastapi patterns Framework skills plaintext npx skills add deepgram/deepgram python sdk npx skills add elevenlabs/skills Loop Engeneering plaintext One front door — init + doctor + status npx @cobusgreyling/loop init . pattern daily triage tool codex npx @cobusgreyling/loop doctor . Spec Driven Development Apply SDD using these basic commands: /speckit.specify : Define what you want to build requirements and user stories /speckit.plan : Create technical implementation plans with your chosen tech stack /speckit.tasks : Generate actionable task lists for implementation /speckit.implement : Excute all tasks to build the feature according to the plan /speckit.converge : Assess the codebase against spec/plan/tasks and append remaining work as new tasks Azure devops plaintext { \"servers\": { \"ado remote mcp\": { \"url\": \"https://mcp.dev.azure.com/kognia\", \"type\": \"http\" } } }"
+              - generic [ref=e407]:
+                - button "Fijar nota" [ref=e408]
+                - button "Eliminar nota" [ref=e409]
+            - generic [ref=e410]: 27 ago
