@@ -9,6 +9,20 @@
   </p>
 
   <p><strong>Guarda lo importante. Mantén el control.</strong><br />Una bóveda personal para variables de entorno, credenciales y secretos de tus proyectos.</p>
+
+  <p>
+    <a href="#qué-puedes-hacer">Explorar funcionalidades</a> ·
+    <a href="#inicio-rápido">Instalar con Docker</a> ·
+    <a href="#arquitectura">Ver arquitectura</a>
+  </p>
+</div>
+
+<br />
+
+<div align="center">
+  <img src="./public/project-vault-dashboard.png" alt="Vista principal de Project Vault con la navegación y el resumen de un proyecto" width="100%" />
+  <br />
+  <sub><strong>Un espacio de trabajo claro para volver rápidamente a cada proyecto.</strong></sub>
 </div>
 
 <br />

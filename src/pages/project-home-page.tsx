@@ -79,22 +79,11 @@ export function ProjectHomePage() {
         </div>
       </section>
 
-      <section className="glass-panel futuristic-card rounded-xl border bg-card p-5 shadow-none sm:p-6">
-        <div className="mb-5 flex items-start gap-3">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-vault/15 text-vault ring-1 ring-vault/20"><ClipboardList className="size-5" /></div>
-          <div><h3 className="text-lg font-semibold tracking-tight">Planificación</h3><p className="mt-1 text-sm leading-relaxed text-muted-foreground">Organiza el trabajo y conviértelo en sesiones de foco concretas.</p></div>
-        </div>
-        <div>
-          <FeatureLink to={`/projects/${selectedProject.id}/tasks`} icon={ClipboardList} title="Tareas" description="Organiza el trabajo en un tablero Kanban" count={tasks.length} />
-          <FeatureLink to={`/projects/${selectedProject.id}/focus`} icon={Clock3} title="Enfoque" description="Trabaja con Pomodoro y avanza pasos pequeños" count={tasks.filter((task) => ["todo", "in_progress", "in_test"].includes(task.status)).length} />
-        </div>
-      </section>
-
       <section className="grid gap-4 lg:grid-cols-[1.45fr_0.85fr]">
         <div className="glass-panel futuristic-card rounded-xl border bg-card p-5 shadow-none sm:p-6">
           <div className="mb-6 flex items-start justify-between gap-4">
             <div className="flex min-w-0 items-start gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-vault/15 text-vault ring-1 ring-vault/20">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/12 text-rose-700 ring-1 ring-rose-500/22 dark:bg-rose-300/15 dark:text-rose-200 dark:ring-rose-300/25">
                 <ShieldCheck className="size-5" />
               </div>
               <div className="min-w-0">
@@ -135,7 +124,7 @@ export function ProjectHomePage() {
 
         <div className="glass-panel futuristic-card flex flex-col rounded-xl border bg-card p-5 shadow-none sm:p-6">
           <div className="mb-6 flex items-start gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-vault/15 text-vault ring-1 ring-vault/20">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-500/12 text-sky-700 ring-1 ring-sky-500/22 dark:bg-sky-300/15 dark:text-sky-200 dark:ring-sky-300/25">
               <FileText className="size-5" />
             </div>
             <div className="min-w-0">
@@ -154,6 +143,17 @@ export function ProjectHomePage() {
               count={notes.length}
             />
           </div>
+        </div>
+      </section>
+
+      <section className="glass-panel futuristic-card rounded-xl border bg-card p-5 shadow-none sm:p-6">
+        <div className="mb-5 flex items-start gap-3">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/15 text-amber-700 ring-1 ring-amber-500/25 dark:bg-amber-300/15 dark:text-amber-200 dark:ring-amber-300/25"><ClipboardList className="size-5" /></div>
+          <div><h3 className="text-lg font-semibold tracking-tight">Planificación</h3><p className="mt-1 text-sm leading-relaxed text-muted-foreground">Organiza el trabajo y conviértelo en sesiones de foco concretas.</p></div>
+        </div>
+        <div>
+          <FeatureLink to={`/projects/${selectedProject.id}/tasks`} icon={ClipboardList} title="Tareas" description="Organiza el trabajo en un tablero Kanban" count={tasks.length} />
+          <FeatureLink to={`/projects/${selectedProject.id}/focus`} icon={Clock3} title="Enfoque" description="Trabaja con Pomodoro y avanza pasos pequeños" count={tasks.filter((task) => ["todo", "in_progress", "in_test"].includes(task.status)).length} />
         </div>
       </section>
 

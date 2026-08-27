@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   Archive,
   Braces,
@@ -158,6 +158,8 @@ export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const projectListRef = useRef<HTMLDivElement>(null);
+  const previousProjectPositions = useRef(new Map<number, number>());
   const visibleProjects = useMemo(
     () =>
       [
@@ -187,6 +189,45 @@ export function Sidebar() {
     navigate(`/projects/${id}`);
     setMobileOpen(false);
   };
+  useLayoutEffect(() => {
+    const list = projectListRef.current;
+    if (!list || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      previousProjectPositions.current.clear();
+      return;
+    }
+    const elements = Array.from(
+      list.querySelectorAll<HTMLElement>("[data-project-id]"),
+    );
+    const nextPositions = new Map<number, number>();
+    const movedElements: Array<{ element: HTMLElement; offset: number }> = [];
+    elements.forEach((element) => {
+      const id = Number(element.dataset.projectId);
+      const top = element.getBoundingClientRect().top;
+      nextPositions.set(id, top);
+      const previousTop = previousProjectPositions.current.get(id);
+      if (previousTop !== undefined && Math.abs(previousTop - top) > 1) {
+        movedElements.push({ element, offset: previousTop - top });
+      }
+    });
+    previousProjectPositions.current = nextPositions;
+    if (!movedElements.length) return;
+    const animations = movedElements.map(({ element, offset }) =>
+      element.animate(
+        [
+          { transform: `translateY(${offset}px)` },
+          { transform: "translateY(0)" },
+        ],
+        {
+          duration: 1100,
+          easing: "ease-in-out",
+          fill: "both",
+        },
+      ),
+    );
+    return () => {
+      animations.forEach((animation) => animation.cancel());
+    };
+  }, [visibleProjects]);
   const runQuickAction = (
     projectId: number,
     action: (typeof quickActions)[number],
@@ -283,16 +324,17 @@ export function Sidebar() {
               Aún no hay proyectos activos.
             </p>
           ) : (
-            <div className="grid gap-1">
+            <div ref={projectListRef} className="grid gap-1 overflow-hidden">
               {visibleProjects.map((project) => {
                 const active = selectedProject?.id === project.id;
                 return (
                   <div
                     key={project.id}
+                    data-project-id={project.id}
                     className={cn(
                       "group flex items-center rounded-lg",
                       active
-                        ? "bg-vault/12 text-vault ring-1 ring-vault/25"
+                        ? "bg-vault/12 text-vault"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground",
                     )}
                   >
