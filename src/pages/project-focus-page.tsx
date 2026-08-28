@@ -91,7 +91,16 @@ export function ProjectFocusPage() {
   const [timer, setTimer] = useState<TimerState>(initialTimer);
   const activeTasks = useMemo(() => tasks.filter((task) => ["todo", "in_progress", "in_test"].includes(task.status)).sort((a, b) => (a.status === "in_progress" ? -1 : b.status === "in_progress" ? 1 : 0) || ({ high: 0, medium: 1, low: 2 }[a.priority] - { high: 0, medium: 1, low: 2 }[b.priority]) || b.updatedAt.localeCompare(a.updatedAt)), [tasks]);
   const selectedTask = tasks.find((task) => task.id === selectedId) ?? null;
-  useEffect(() => { const requested = Number(searchParams.get("task")); const restored = timer.taskId ?? requested; setSelectedId(activeTasks.some((task) => task.id === restored) ? restored : activeTasks[0]?.id ?? null); }, [activeTasks, searchParams, timer.taskId]);
+  useEffect(() => {
+    const requested = searchParams.get("task");
+    const requestedId = requested ? Number(requested) : null;
+    const restored = timer.taskId ?? requestedId;
+    setSelectedId((current) => {
+      if (activeTasks.some((task) => task.id === current)) return current;
+      if (activeTasks.some((task) => task.id === restored)) return restored;
+      return activeTasks[0]?.id ?? null;
+    });
+  }, [activeTasks, searchParams, timer.taskId]);
   useEffect(() => { try { localStorage.setItem("secret-vault-focus-timer", JSON.stringify(timer)); } catch { /* storage is optional */ } }, [timer]);
   const completePhase = useCallback(async () => {
     if (!timer.running) return;
